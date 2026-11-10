@@ -58,6 +58,42 @@ public class StreakManager {
         sp.edit().putBoolean(KEY_TUTORIAL_SHOWN, shown).apply();
     }
 
+    /**
+     * Restores misses back to full 2/2 (via 2 mandatory ad views).
+     */
+    public static void restoreMonthlyMisses(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        sp.edit().putInt(KEY_MONTHLY_MISSES, 0).apply();
+        updateWidgets(context);
+    }
+
+    /**
+     * Consumes one miss for testing/simulation.
+     */
+    public static void consumeOneMiss(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        int misses = sp.getInt(KEY_MONTHLY_MISSES, 0);
+        if (misses < 2) {
+            sp.edit().putInt(KEY_MONTHLY_MISSES, misses + 1).apply();
+            updateWidgets(context);
+        }
+    }
+
+    /**
+     * Restores streak & resets misses to 2/2 for 500 KZT paid recovery.
+     */
+    public static void restoreStreakPaid(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        int current = sp.getInt(KEY_CURRENT_STREAK, 1);
+        int highest = sp.getInt(KEY_HIGHEST_STREAK, 1);
+        int restoredStreak = Math.max(current, highest);
+        sp.edit()
+                .putInt(KEY_CURRENT_STREAK, restoredStreak)
+                .putInt(KEY_MONTHLY_MISSES, 0)
+                .apply();
+        updateWidgets(context);
+    }
+
     private static void checkAndResetMonthlyMisses(SharedPreferences sp) {
         Calendar now = Calendar.getInstance();
         int currentMonth = now.get(Calendar.MONTH);

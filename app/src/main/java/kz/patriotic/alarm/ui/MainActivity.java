@@ -56,14 +56,14 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
     private TextView tvTopTitle, tvTopSubtitle;
     private ImageView btnTopAdd, btnOverflowMenu;
 
-    // Tab Containers
-    private NestedScrollView tabAlarmsView, tabStreakView, tabWidgetsView, tabSettingsView;
+    // Tab Containers (5 Tabs)
+    private NestedScrollView tabAlarmsView, tabStreakView, tabWidgetsView, tabDonationView, tabSettingsView;
     private ImageButton fabAddAlarm;
 
-    // Bottom Navigation Elements
-    private LinearLayout navTabAlarms, navTabStreak, navTabWidgets, navTabSettings;
-    private ImageView ivNavAlarms, ivNavStreak, ivNavWidgets, ivNavSettings;
-    private TextView tvNavAlarms, tvNavStreak, tvNavWidgets, tvNavSettings;
+    // Bottom Navigation Elements (5 Tabs)
+    private LinearLayout navTabAlarms, navTabStreak, navTabWidgets, navTabDonation, navTabSettings;
+    private ImageView ivNavAlarms, ivNavStreak, ivNavWidgets, ivNavDonation, ivNavSettings;
+    private TextView tvNavAlarms, tvNavStreak, tvNavWidgets, tvNavDonation, tvNavSettings;
 
     // Tab 1: Alarms Views
     private View bannerStreakMini;
@@ -76,9 +76,11 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
     private AlarmsAdapter alarmsAdapter;
     private List<AlarmItem> alarmList;
 
-    // Tab 2: Streak Views
+    // Tab 2: Streak Views & Recovery
     private TextView tvStreakHeroTitle, tvStreakNumber, tvStreakUnit;
     private TextView tvTierName, tvTierDesc, tvStreakMisses, tvRoadmapHeader;
+    private TextView tvStreakRecoveryTitle, tvStreakRecoveryDesc;
+    private MaterialButton btnRestoreMissesAds, btnRestoreStreakPaid;
     private RecyclerView recyclerRoadmapInline;
 
     // Tab 3: Widgets Views
@@ -87,21 +89,27 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
     private MaterialButton btnForceRefreshWidgets;
     private TextView tvWidgetGuideTitle, tvWidgetGuideSteps;
 
-    // Tab 4: Settings Views
+    // Tab 4: Dedicated Donation Tab Views
+    private TextView tvDonTabTitle, tvDonTabDesc, tvDonSelectAmountLabel, tvDonPerksTitle, tvDonPerksDesc;
+    private TextView tabBtnDon100, tabBtnDon200, tabBtnDon500, tabBtnDon1000, tabBtnDon2000, tabBtnDon5000, tabBtnDon10000;
+
+    // Tab 5: Settings Views
     private TextView tvSettingLangTitle, btnLangKz, btnLangRu;
     private TextView tvImmersionTitle, tvImmersionDesc, tvLearningProgressText;
     private SwitchCompat switchImmersion;
     private ProgressBar progressLearningBar;
     private TextView tvAdRemovalTitle, tvAdStatus;
     private MaterialButton btnSettingsRemoveAds;
-    private TextView tvSupportTitle, tvSupportDesc;
-    private MaterialButton btnSettingsDonate;
     private TextView tvLegalTitle, tvLegalDesc;
     private MaterialButton btnSettingsLegal;
     private TextView tvTutorialSettingTitle, tvTutorialSettingDesc;
     private MaterialButton btnSettingsTutorial;
 
-    private int currentTab = 0; // 0: Alarms, 1: Streak, 2: Widgets, 3: Settings
+    // Banner ad strip
+    private View layoutBannerAdStrip;
+    private TextView tvBannerAdText, btnBannerRemoveAd;
+
+    private int currentTab = 0; // 0: Alarms, 1: Streak, 2: Widgets, 3: Donation, 4: Settings
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         setupRoadmapRecycler();
         updateStreakUI();
         updateLocalizationUI();
+        updateAdUI();
         switchTab(0);
 
         // Check required permissions on startup
@@ -142,36 +151,41 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         btnTopAdd.setOnClickListener(v -> showEditAlarmDialog(null));
         btnOverflowMenu.setOnClickListener(this::showOverflowMenu);
 
-        // Tabs
+        // 5 Tabs Containers
         tabAlarmsView = findViewById(R.id.tab_alarms_view);
         tabStreakView = findViewById(R.id.tab_streak_view);
         tabWidgetsView = findViewById(R.id.tab_widgets_view);
+        tabDonationView = findViewById(R.id.tab_donation_view);
         tabSettingsView = findViewById(R.id.tab_settings_view);
         fabAddAlarm = findViewById(R.id.fab_add_alarm);
         fabAddAlarm.setOnClickListener(v -> showEditAlarmDialog(null));
 
-        // Bottom Navigation
+        // 5 Bottom Navigation Items
         navTabAlarms = findViewById(R.id.nav_tab_alarms);
         navTabStreak = findViewById(R.id.nav_tab_streak);
         navTabWidgets = findViewById(R.id.nav_tab_widgets);
+        navTabDonation = findViewById(R.id.nav_tab_donation);
         navTabSettings = findViewById(R.id.nav_tab_settings);
 
         ivNavAlarms = findViewById(R.id.iv_nav_alarms);
         ivNavStreak = findViewById(R.id.iv_nav_streak);
         ivNavWidgets = findViewById(R.id.iv_nav_widgets);
+        ivNavDonation = findViewById(R.id.iv_nav_donation);
         ivNavSettings = findViewById(R.id.iv_nav_settings);
 
         tvNavAlarms = findViewById(R.id.tv_nav_alarms);
         tvNavStreak = findViewById(R.id.tv_nav_streak);
         tvNavWidgets = findViewById(R.id.tv_nav_widgets);
+        tvNavDonation = findViewById(R.id.tv_nav_donation);
         tvNavSettings = findViewById(R.id.tv_nav_settings);
 
-        navTabAlarms.setOnClickListener(v -> switchTab(0));
-        navTabStreak.setOnClickListener(v -> switchTab(1));
-        navTabWidgets.setOnClickListener(v -> switchTab(2));
-        navTabSettings.setOnClickListener(v -> switchTab(3));
+        navTabAlarms.setOnClickListener(v -> { switchTab(0); AdManager.triggerFrequentAd(this, null); });
+        navTabStreak.setOnClickListener(v -> { switchTab(1); AdManager.triggerFrequentAd(this, null); });
+        navTabWidgets.setOnClickListener(v -> { switchTab(2); AdManager.triggerFrequentAd(this, null); });
+        navTabDonation.setOnClickListener(v -> { switchTab(3); AdManager.triggerFrequentAd(this, null); });
+        navTabSettings.setOnClickListener(v -> { switchTab(4); AdManager.triggerFrequentAd(this, null); });
 
-        // Tab 1 Views
+        // Tab 1: Alarms Views
         bannerStreakMini = findViewById(R.id.banner_streak_mini);
         bannerStreakMini.setOnClickListener(v -> switchTab(1));
         tvStreakBannerTitle = findViewById(R.id.tv_streak_banner_title);
@@ -186,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         layoutEmptyAlarms = findViewById(R.id.layout_empty_alarms);
         tvEmptyText = findViewById(R.id.tv_empty_text);
 
-        // Tab 2 Views
+        // Tab 2: Streak Views & Recovery
         tvStreakHeroTitle = findViewById(R.id.tv_streak_hero_title);
         tvStreakNumber = findViewById(R.id.tv_streak_number);
         tvStreakUnit = findViewById(R.id.tv_streak_unit);
@@ -196,7 +210,26 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         tvRoadmapHeader = findViewById(R.id.tv_roadmap_header);
         recyclerRoadmapInline = findViewById(R.id.recycler_roadmap_inline);
 
-        // Tab 3 Views
+        tvStreakRecoveryTitle = findViewById(R.id.tv_streak_recovery_title);
+        tvStreakRecoveryDesc = findViewById(R.id.tv_streak_recovery_desc);
+        btnRestoreMissesAds = findViewById(R.id.btn_restore_misses_ads);
+        btnRestoreStreakPaid = findViewById(R.id.btn_restore_streak_paid);
+
+        btnRestoreMissesAds.setOnClickListener(v -> {
+            AdManager.showMandatoryDoubleAdForMissRestore(this, () -> {
+                updateStreakUI();
+                updateLocalizationUI();
+            });
+        });
+
+        btnRestoreStreakPaid.setOnClickListener(v -> {
+            AdManager.showPurchaseStreakRestoreDialog(this, () -> {
+                updateStreakUI();
+                updateLocalizationUI();
+            });
+        });
+
+        // Tab 3: Widgets Views
         tvWidgetsHeader = findViewById(R.id.tv_widgets_header);
         tvW1Title = findViewById(R.id.tv_w1_title);
         tvW1Desc = findViewById(R.id.tv_w1_desc);
@@ -211,13 +244,31 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         btnForceRefreshWidgets.setOnClickListener(v -> {
             StreakManager.updateWidgets(this);
             updateStreakUI();
-            String msg = LanguageProgressionManager.getLocalizedText(this,
-                    "Все виджеты успешно обновлены! (0 ошибок)",
-                    "Барлық виджеттер сәтті жаңартылды! (0 қате)", 1);
+            String msg = LanguageProgressionManager.isKazakh(this) ?
+                    "Барлық виджеттер сәтті жаңартылды! (0 қате)" :
+                    "Все виджеты успешно обновлены! (0 ошибок)";
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            AdManager.triggerFrequentAd(this, null);
         });
 
-        // Tab 4 Views
+        // Tab 4: Dedicated Donation Tab Views
+        tvDonTabTitle = findViewById(R.id.tv_don_tab_title);
+        tvDonTabDesc = findViewById(R.id.tv_don_tab_desc);
+        tvDonSelectAmountLabel = findViewById(R.id.tv_don_select_amount_label);
+        tvDonPerksTitle = findViewById(R.id.tv_don_perks_title);
+        tvDonPerksDesc = findViewById(R.id.tv_don_perks_desc);
+
+        tabBtnDon100 = findViewById(R.id.tab_btn_don_100);
+        tabBtnDon200 = findViewById(R.id.tab_btn_don_200);
+        tabBtnDon500 = findViewById(R.id.tab_btn_don_500);
+        tabBtnDon1000 = findViewById(R.id.tab_btn_don_1000);
+        tabBtnDon2000 = findViewById(R.id.tab_btn_don_2000);
+        tabBtnDon5000 = findViewById(R.id.tab_btn_don_5000);
+        tabBtnDon10000 = findViewById(R.id.tab_btn_don_10000);
+
+        setupDonationButtons();
+
+        // Tab 5: Settings Views
         tvSettingLangTitle = findViewById(R.id.tv_setting_lang_title);
         btnLangKz = findViewById(R.id.btn_lang_kz);
         btnLangRu = findViewById(R.id.btn_lang_ru);
@@ -231,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         btnLangRu.setOnClickListener(v -> {
             LanguageProgressionManager.setLanguage(this, "ru");
             updateLocalizationUI();
-            Toast.makeText(this, "Русский язык установлен (100-дневное погружение активно)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Русский язык установлен 🇷🇺", Toast.LENGTH_SHORT).show();
         });
 
         tvImmersionTitle = findViewById(R.id.tv_immersion_title);
@@ -251,11 +302,6 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         btnSettingsRemoveAds = findViewById(R.id.btn_settings_remove_ads);
         btnSettingsRemoveAds.setOnClickListener(v -> AdManager.showPurchaseRemoveAdsDialog(this, this::updateAdUI));
 
-        tvSupportTitle = findViewById(R.id.tv_support_title);
-        tvSupportDesc = findViewById(R.id.tv_support_desc);
-        btnSettingsDonate = findViewById(R.id.btn_settings_donate);
-        btnSettingsDonate.setOnClickListener(v -> DonationManager.showDonationDialog(this));
-
         tvLegalTitle = findViewById(R.id.tv_legal_title);
         tvLegalDesc = findViewById(R.id.tv_legal_desc);
         btnSettingsLegal = findViewById(R.id.btn_settings_legal);
@@ -265,6 +311,31 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         tvTutorialSettingDesc = findViewById(R.id.tv_tutorial_setting_desc);
         btnSettingsTutorial = findViewById(R.id.btn_settings_tutorial);
         btnSettingsTutorial.setOnClickListener(v -> showTutorialDialog());
+
+        // Banner ad strip
+        layoutBannerAdStrip = findViewById(R.id.layout_banner_ad_strip);
+        tvBannerAdText = findViewById(R.id.tv_banner_ad_text);
+        btnBannerRemoveAd = findViewById(R.id.btn_banner_remove_ad);
+        btnBannerRemoveAd.setOnClickListener(v -> AdManager.showPurchaseRemoveAdsDialog(this, this::updateAdUI));
+    }
+
+    private void setupDonationButtons() {
+        int[] amounts = new int[]{100, 200, 500, 1000, 2000, 5000, 10000};
+        TextView[] views = new TextView[]{
+                tabBtnDon100, tabBtnDon200, tabBtnDon500,
+                tabBtnDon1000, tabBtnDon2000, tabBtnDon5000, tabBtnDon10000
+        };
+
+        for (int i = 0; i < views.length; i++) {
+            final int amt = amounts[i];
+            views[i].setOnClickListener(v -> {
+                boolean isKz = LanguageProgressionManager.isKazakh(this);
+                String msg = isKz ?
+                        ("Үлкен рақмет! Сіз отандық патриоттық жобаны " + amt + " ₸ көлемінде қолдадыңыз! 🇰🇿") :
+                        ("Огромное спасибо! Вы поддержали казахстанский патриотический проект на " + amt + " ₸! 🇰🇿");
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            });
+        }
     }
 
     private void switchTab(int tabIndex) {
@@ -273,11 +344,12 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         tabAlarmsView.setVisibility(tabIndex == 0 ? View.VISIBLE : View.GONE);
         tabStreakView.setVisibility(tabIndex == 1 ? View.VISIBLE : View.GONE);
         tabWidgetsView.setVisibility(tabIndex == 2 ? View.VISIBLE : View.GONE);
-        tabSettingsView.setVisibility(tabIndex == 3 ? View.VISIBLE : View.GONE);
+        tabDonationView.setVisibility(tabIndex == 3 ? View.VISIBLE : View.GONE);
+        tabSettingsView.setVisibility(tabIndex == 4 ? View.VISIBLE : View.GONE);
 
         fabAddAlarm.setVisibility(tabIndex == 0 ? View.VISIBLE : View.GONE);
 
-        // Colors
+        // Highlight Active Tab
         int activeColor = 0xFFFEC50C; // Gold
         int inactiveColor = 0xFF8E8E93; // Muted gray
 
@@ -290,12 +362,14 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         ivNavWidgets.setColorFilter(tabIndex == 2 ? activeColor : inactiveColor);
         tvNavWidgets.setTextColor(tabIndex == 2 ? activeColor : inactiveColor);
 
-        ivNavSettings.setColorFilter(tabIndex == 3 ? activeColor : inactiveColor);
-        tvNavSettings.setTextColor(tabIndex == 3 ? activeColor : inactiveColor);
+        ivNavDonation.setColorFilter(tabIndex == 3 ? activeColor : inactiveColor);
+        tvNavDonation.setTextColor(tabIndex == 3 ? activeColor : inactiveColor);
 
-        // Header Title
-        String lang = LanguageProgressionManager.getLanguage(this);
-        boolean isKz = "kz".equals(lang);
+        ivNavSettings.setColorFilter(tabIndex == 4 ? activeColor : inactiveColor);
+        tvNavSettings.setTextColor(tabIndex == 4 ? activeColor : inactiveColor);
+
+        // Header Title in active language
+        boolean isKz = LanguageProgressionManager.isKazakh(this);
 
         if (tabIndex == 0) {
             tvTopTitle.setText(isKz ? "Оятарлар" : "Будильники");
@@ -304,7 +378,10 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
             tvTopTitle.setText(isKz ? "Серия 365" : "Серия 365 дней");
             btnTopAdd.setVisibility(View.GONE);
         } else if (tabIndex == 2) {
-            tvTopTitle.setText(isKz ? "Виджеттер" : "Виджеты (0 қате)");
+            tvTopTitle.setText(isKz ? "Виджеттер (0 қате)" : "Виджеты (0 ошибок)");
+            btnTopAdd.setVisibility(View.GONE);
+        } else if (tabIndex == 3) {
+            tvTopTitle.setText(isKz ? "Әзірлеушіні қолдау" : "Поддержать разработчика");
             btnTopAdd.setVisibility(View.GONE);
         } else {
             tvTopTitle.setText(isKz ? "Баптаулар" : "Настройки");
@@ -324,7 +401,9 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         int currentStreak = StreakManager.getCurrentStreak(this);
         recyclerRoadmapInline.setLayoutManager(new LinearLayoutManager(this));
         RoadmapAdapter adapter = new RoadmapAdapter(StreakTier.getAllTiers(), currentStreak, tier -> {
-            String msg = tier.getKzTitle() + " (" + tier.getRuTitle() + ") — " + tier.getDescription();
+            boolean isKz = LanguageProgressionManager.isKazakh(this);
+            String title = isKz ? tier.getKzTitle() : tier.getRuTitle();
+            String msg = title + " — " + tier.getDescription();
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         });
         recyclerRoadmapInline.setAdapter(adapter);
@@ -340,17 +419,31 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         int streak = StreakManager.getCurrentStreak(this);
         StreakTier tier = StreakManager.getCurrentTier(this);
         int missesRemaining = StreakManager.getMonthlyMissesRemaining(this);
+        boolean isKz = LanguageProgressionManager.isKazakh(this);
 
         // Tab 1 Mini Banner
         String streakStr = String.valueOf(streak);
-        tvStreakBannerTitle.setText("Патриоттық серия: " + streak + " күн қатарынан");
-        tvStreakBannerDesc.setText(tier.getKzTitle() + " дәрежесі • Толық шкаланы көру →");
-        tvStreakBannerBadge.setText(missesRemaining + "/2 запас");
+        String bannerTitle = isKz ?
+                ("Патриоттық серия: " + streak + " күн қатарынан") :
+                ("Патриотическая серия: " + streak + " дней подряд");
+        tvStreakBannerTitle.setText(bannerTitle);
+
+        String rankTitle = isKz ? tier.getKzTitle() : tier.getRuTitle();
+        String bannerDesc = isKz ?
+                (rankTitle + " дәрежесі • Толық шкаланы көру →") :
+                (rankTitle + " • Посмотреть всю шкалу →");
+        tvStreakBannerDesc.setText(bannerDesc);
+
+        tvStreakBannerBadge.setText(missesRemaining + "/2 " + (isKz ? "запас" : "запас"));
 
         // Tab 2 Hero
         tvStreakNumber.setText(streakStr);
-        tvStreakMisses.setText("Айына " + missesRemaining + " рет өткізіп алу запасы бар");
-        tvTierName.setText("Ранг: " + tier.getKzTitle() + " (" + tier.getRuTitle() + ")");
+        String missesDesc = isKz ?
+                ("Айына " + missesRemaining + " рет өткізіп алу запасы бар") :
+                ("Запас: " + missesRemaining + " из 2 пропусков в этом месяце");
+        tvStreakMisses.setText(missesDesc);
+
+        tvTierName.setText((isKz ? "Ранг: " : "Ранг: ") + (isKz ? tier.getKzTitle() : (tier.getRuTitle() + " (" + tier.getKzTitle() + ")")));
 
         try {
             int accent = Color.parseColor(tier.getAccentColorHex());
@@ -359,39 +452,48 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
 
         int nextTierDays = tier.getMaxDays() + 1;
         int daysLeft = Math.max(1, nextTierDays - streak);
-        tvTierDesc.setText(tier.getDescription() + " • До келесі ранга: " + daysLeft + " күн");
+        tvTierDesc.setText(tier.getDescription() + " • " + (isKz ? ("Келесі дәрежеге дейін: " + daysLeft + " күн") : ("До след. ранга: " + daysLeft + " дн.")));
 
         // Tab 3 Widgets Preview
         if (previewW1Streak != null) previewW1Streak.setText(streakStr);
         if (previewW2Streak != null) previewW2Streak.setText(streakStr);
 
-        // Tab 4 Progress
+        // Tab 5 Progress
         int learningProgress = LanguageProgressionManager.getLearningProgressPercent(this);
         if (progressLearningBar != null) progressLearningBar.setProgress(learningProgress);
         if (tvLearningProgressText != null) {
-            tvLearningProgressText.setText("Прогресс: " + learningProgress + " / 100 сөз қазақшаға ауыстырылды");
+            String dailyWord = LanguageProgressionManager.getDailyImmersionPhrase(this);
+            tvLearningProgressText.setText(isKz ?
+                    ("Күннің жаңа сөзі: " + dailyWord + " (Прогресс: " + learningProgress + "/100)") :
+                    ("Слово дня: " + dailyWord + " (Прогресс: " + learningProgress + "/100)"));
         }
     }
 
     private void updateAdUI() {
         boolean adFree = AdManager.isAdFree(this);
+        boolean isKz = LanguageProgressionManager.isKazakh(this);
+
+        if (layoutBannerAdStrip != null) {
+            layoutBannerAdStrip.setVisibility(adFree ? View.GONE : View.VISIBLE);
+        }
+
         if (adFree) {
-            tvAdStatus.setText("Статус: Жарнама мәңгіге өшірілген ✓ (Ad-Free Active)");
+            tvAdStatus.setText(isKz ? "Статус: Жарнама мәңгіге өшірілген ✓" : "Статус: Реклама навсегда отключена ✓");
             tvAdStatus.setTextColor(0xFF2ECC71);
             btnSettingsRemoveAds.setEnabled(false);
-            btnSettingsRemoveAds.setText("Сатып алынды ✓ (Жарнама жоқ)");
+            btnSettingsRemoveAds.setText(isKz ? "Сатып алынды ✓ (Жарнама жоқ)" : "Приобретено ✓ (Рекламы нет)");
         } else {
-            tvAdStatus.setText("Статус: Жарнама қосулы (Реклама активна)");
+            tvAdStatus.setText(isKz ? "Статус: Жарнама қосулы (Реклама активна)" : "Статус: Реклама активна");
             tvAdStatus.setTextColor(0xFF8EA9C1);
             btnSettingsRemoveAds.setEnabled(true);
-            btnSettingsRemoveAds.setText("Жарнаманы өшіру — 2 000 ₸");
+            btnSettingsRemoveAds.setText(isKz ? "Жарнаманы өшіру — 2 000 ₸" : "Отключить рекламу навсегда — 2 000 ₸");
         }
     }
 
     private void updateLocalizationUI() {
-        String lang = LanguageProgressionManager.getLanguage(this);
-        boolean isKz = "kz".equals(lang);
+        boolean isKz = LanguageProgressionManager.isKazakh(this);
 
+        // Language Buttons highlight
         if (isKz) {
             btnLangKz.setBackgroundResource(R.drawable.bg_btn_kazakh_blue);
             btnLangKz.setTextColor(0xFF061320);
@@ -404,48 +506,98 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
             btnLangKz.setTextColor(0xFF8DB4D6);
         }
 
-        // Dynamic texts with 100-day gradual immersion support
-        tvTopSubtitle.setText(LanguageProgressionManager.getLocalizedText(this, "РЕСПУБЛИКА КАЗАХСТАН", "ҚАЗАҚСТАН ПАТРИОТЫ", 1));
-        tvRuleTitle.setText(LanguageProgressionManager.getLocalizedText(this, "ПРАВИЛО СЕРИИ ПАТРИОТА", "СЕРИЯ ЕРЕЖЕСІ (ПРАВИЛО СЕРИИ)", 5));
-        tvRuleDesc.setText(LanguageProgressionManager.getLocalizedText(this,
-                "• Будни (Пн-Пт): с 00:00 до 10:00\n• Выходные (Сб-Вс): с 00:00 до 12:00\nБудильники позже не засчитываются в серию. В месяц разрешено 2 пропуска без потери серии.",
-                "• Жұмыс күндері (Пн-Пт): 00:00 - 10:00\n• Демалыс күндері (Сб-Вс): 00:00 - 12:00\nОсы уақыттар ғана серияны қолдайды. Ай сайын 2 рет өткізіп алуға рұқсат.", 10));
+        // Header Subtitle
+        tvTopSubtitle.setText(isKz ? "ҚАЗАҚСТАН ПАТРИОТЫ" : "РЕСПУБЛИКА КАЗАХСТАН");
 
-        tvSectionMyAlarms.setText(LanguageProgressionManager.getLocalizedText(this, "МОИ БУДИЛЬНИКИ", "МЕНІҢ ОЯТАРЛАРЫМ", 15));
-        btnAddAlarmHeader.setText(LanguageProgressionManager.getLocalizedText(this, "+ Поставить", "+ Қосу", 20));
-        tvEmptyText.setText(LanguageProgressionManager.getLocalizedText(this,
-                "Нет активных будильников.\nПоставьте первый будильник для начала патриотической серии!",
-                "Әзірге оятар жоқ.\nАлғашқы оятарыңызды орнатыңыз!", 25));
+        // Tab 1: Alarms
+        tvRuleTitle.setText(isKz ? "СЕРИЯ ЕРЕЖЕСІ (ПРАВИЛО СЕРИИ)" : "ПРАВИЛО СЕРИИ ПАТРИОТА");
+        tvRuleDesc.setText(isKz ?
+                "• Жұмыс күндері (Пн-Пт): 00:00 - 10:00\n• Демалыс күндері (Сб-Вс): 00:00 - 12:00\nОсы уақыттар ғана серияны қолдайды. Ай сайын 2 рет өткізіп алуға рұқсат." :
+                "• Будни (Пн-Пт): с 00:00 до 10:00\n• Выходные (Сб-Вс): с 00:00 до 12:00\nБудильники позже не засчитываются в серию. В месяц разрешено 2 пропуска без потери серии.");
 
-        tvStreakHeroTitle.setText(LanguageProgressionManager.getLocalizedText(this, "ПАТРИОТИЧЕСКАЯ 365-ДНЕВНАЯ СЕРИЯ", "ПАТРИОТТЫҚ 365 КҮН СЕРИЯСЫ", 30));
-        tvStreakUnit.setText(LanguageProgressionManager.getLocalizedText(this, "дней подряд", "күн қатарынан", 35));
-        tvRoadmapHeader.setText(LanguageProgressionManager.getLocalizedText(this, "ШКАЛА 365 ДНЕЙ И РАНГИ ПАТРИОТА", "365 КҮН ШКАЛАСЫ ЖӘНЕ ДӘРЕЖЕЛЕР", 40));
+        tvSectionMyAlarms.setText(isKz ? "МЕНІҢ ОЯТАРЛАРЫМ" : "МОИ БУДИЛЬНИКИ");
+        btnAddAlarmHeader.setText(isKz ? "+ Қосу" : "+ Поставить");
+        tvEmptyText.setText(isKz ?
+                "Әзірге оятар жоқ.\nАлғашқы оятарыңызды орнатыңыз!" :
+                "Нет активных будильников.\nПоставьте первый будильник для начала патриотической серии!");
 
-        tvWidgetsHeader.setText(LanguageProgressionManager.getLocalizedText(this, "ОФИЦИАЛЬНЫЕ ВИДЖЕТЫ КАЗАХСТАНА (0 ОШИБОК)", "РЕСМИ ҚАЗАҚСТАН ВИДЖЕТТЕРІ (0 ҚАТЕ)", 45));
-        tvW1Title.setText(LanguageProgressionManager.getLocalizedText(this, "1. Горизонтальный виджет 4x2 (СЕРИЯ ДНЕЙ)", "1. Горизонтальді виджет 4x2 (КҮН СЕРИЯСЫ)", 50));
-        tvW1Desc.setText(LanguageProgressionManager.getLocalizedText(this, "Байтерек, флаг Казахстана и кнопка моментального обновления", "Бәйтерек, Қазақстан туы және жаңарту батырмасы", 55));
-        tvW2Title.setText(LanguageProgressionManager.getLocalizedText(this, "2. Квадратный виджет 2x2 (БІР ЕЛ — БІР ХАЛЫҚ!)", "2. Шаршы виджет 2x2 (БІР ЕЛ — БІР ХАЛЫҚ!)", 60));
-        tvW2Desc.setText(LanguageProgressionManager.getLocalizedText(this, "Золотой орнамент, кольцо солнца и орла со счетчиком серии", "Алтын оюлы жиектеме, Қыран мен Күн сақинасы", 65));
-        btnForceRefreshWidgets.setText(LanguageProgressionManager.getLocalizedText(this, "Принудительно обновить все виджеты ↺", "Виджеттерді мәжбүрлі жаңарту ↺", 70));
-        tvWidgetGuideTitle.setText(LanguageProgressionManager.getLocalizedText(this, "КАК ДОБАВИТЬ НА РАБОЧИЙ СТОЛ?", "ЖҰМЫС ҮСТЕЛІНЕ ҚАЛАЙ ҚОСУ КЕРЕК?", 75));
-        tvWidgetGuideSteps.setText(LanguageProgressionManager.getLocalizedText(this,
-                "1. Зажмите пустую область на главном экране телефона\n2. Выберите меню «Виджеты» (Widgets)\n3. Найдите «Патриотический Будильник» и перетащите 4x2 или 2x2 виджет!\n✓ Работает со 100% стабильностью и 0 ошибок на всех смартфонах.",
-                "1. Экранның бос жерін ұзақ басып тұрыңыз\n2. Ашылған мәзірден «Виджеттер» (Widgets) таңдаңыз\n3. «Патриотический Будильник» тауып, 4x2 немесе 2x2 виджетін жұмыс үстеліне сүйреңіз!\n✓ Android жүйесінің барлық нұсқаларында 0 қатемен жұмыс істейді.", 80));
+        // Tab 2: Streak 365 & Recovery
+        tvStreakHeroTitle.setText(isKz ? "ПАТРИОТТЫҚ 365 КҮН СЕРИЯСЫ" : "ПАТРИОТИЧЕСКАЯ 365-ДНЕВНАЯ СЕРИЯ");
+        tvStreakUnit.setText(isKz ? "күн қатарынан" : "дней подряд");
+        tvRoadmapHeader.setText(isKz ? "365 КҮН ШКАЛАСЫ ЖӘНЕ ДӘРЕЖЕЛЕР" : "ШКАЛА 365 ДНЕЙ И РАНГИ ПАТРИОТА");
 
-        tvNavAlarms.setText(LanguageProgressionManager.getLocalizedText(this, "Будильники", "Оятарлар", 85));
-        tvNavStreak.setText(LanguageProgressionManager.getLocalizedText(this, "Серия 365", "Серия 365", 90));
-        tvNavWidgets.setText(LanguageProgressionManager.getLocalizedText(this, "Виджеты", "Виджеттер", 95));
-        tvNavSettings.setText(LanguageProgressionManager.getLocalizedText(this, "Настройки", "Баптаулар", 100));
+        tvStreakRecoveryTitle.setText(isKz ? "СЕРИЯ ЖӘНЕ ЗАПАСТЫ ҚАЛПЫНА КЕЛТІРУ" : "ВОССТАНОВЛЕНИЕ СЕРИИ И ПРОПУСКОВ");
+        tvStreakRecoveryDesc.setText(isKz ?
+                "Будильникті өткізіп алдыңыз ба? Қалпына келтіру әдісін таңдаңыз:\n• 2/2 запасты қалпына келтіру: 2 міндетті жарнама көру\n• Серияны толық қалпына келтіру: 500 ₸" :
+                "Пропустили будильник? Выберите способ восстановления:\n• Восстановление запаса 2/2: 2 обязательных просмотра рекламы\n• Полное восстановление серии: 500 ₸");
 
+        btnRestoreMissesAds.setText(isKz ?
+                "2 жарнама көру (2/2 запасты қайтару)" :
+                "Смотреть 2 рекламы (Восстановить 2/2)");
+
+        btnRestoreStreakPaid.setText(isKz ?
+                "Серияны 500 ₸-ге қалпына келтіру" :
+                "Восстановить серию за 500 ₸");
+
+        // Tab 3: Widgets
+        tvWidgetsHeader.setText(isKz ? "РЕСМИ ҚАЗАҚСТАН ВИДЖЕТТЕРІ (0 ҚАТЕ)" : "ОФИЦИАЛЬНЫЕ ВИДЖЕТЫ КАЗАХСТАНА (0 ОШИБОК)");
+        tvW1Title.setText(isKz ? "1. Горизонтальді виджет 4x2 (КҮН СЕРИЯСЫ)" : "1. Горизонтальный виджет 4x2 (СЕРИЯ ДНЕЙ)");
+        tvW1Desc.setText(isKz ? "Бәйтерек, Қазақстан туы және жаңарту батырмасы" : "Байтерек, флаг Казахстана и кнопка моментального обновления");
+        tvW2Title.setText(isKz ? "2. Шаршы виджет 2x2 (БІР ЕЛ — БІР ХАЛЫҚ!)" : "2. Квадратный виджет 2x2 (БІР ЕЛ — БІР ХАЛЫҚ!)");
+        tvW2Desc.setText(isKz ? "Алтын оюлы жиектеме, Қыран мен Күн сақинасы" : "Золотой орнамент, кольцо солнца и орла со счетчиком серии");
+        btnForceRefreshWidgets.setText(isKz ? "Виджеттерді мәжбүрлі жаңарту ↺" : "Принудительно обновить все виджеты ↺");
+        tvWidgetGuideTitle.setText(isKz ? "ЖҰМЫС ҮСТЕЛІНЕ ҚАЛАЙ ҚОСУ КЕРЕК?" : "КАК ДОБАВИТЬ НА РАБОЧИЙ СТОЛ?");
+        tvWidgetGuideSteps.setText(isKz ?
+                "1. Экранның бос жерін ұзақ басып тұрыңыз\n2. Ашылған мәзірден «Виджеттер» (Widgets) таңдаңыз\n3. «Патриотический Будильник» тауып, 4x2 немесе 2x2 виджетін жұмыс үстеліне сүйреңіз!\n✓ Android жүйесінің барлық нұсқаларында 0 қатемен жұмыс істейді." :
+                "1. Зажмите пустую область на главном экране телефона\n2. Выберите меню «Виджеты» (Widgets)\n3. Найдите «Патриотический Будильник» и перетащите 4x2 или 2x2 виджет!\n✓ Работает со 100% стабильностью и 0 ошибок на всех смартфонах.");
+
+        // Tab 4: Dedicated Donation Section
+        tvDonTabTitle.setText(isKz ? "ӘЗІРЛЕУШІНІ ҚОЛДАУ (DONATION)" : "ПОДДЕРЖАТЬ РАЗРАБОТЧИКА");
+        tvDonTabDesc.setText(isKz ?
+                "«Патриоттық Будильник» отандық тәуелсіз махаббатпен жасалған. Сіздің қолдауыңыз серверлерді қамтамасыз етуге, жаңа виджеттер шығаруға және қосымшаны тегін сақтауға көмектеседі!" :
+                "«Патриотический Будильник» создан независимо с любовью к Казахстану. Ваша поддержка помогает оплачивать серверы, выпускать новые виджеты и сохранять проект бесплатным для всех граждан!");
+
+        tvDonSelectAmountLabel.setText(isKz ? "ҚОЛДАУ СОМАСЫН ТАҢДАҢЫЗ:" : "ВЫБЕРИТЕ СУММУ ПОДДЕРЖКИ:");
+        tvDonPerksTitle.setText(isKz ? "ПАТРИОТҚА АЛҒЫС:" : "БЛАГОДАРНОСТЬ ПАТРИОТУ:");
+        tvDonPerksDesc.setText(isKz ?
+                "⭐ Қолданба ішіндегі Алтын демеуші мәртебесі\n⭐ Жаңа функцияларды дауыс беру құқығы\n⭐ Әзірлеуші мен Қазақстан қауымдастығының шексіз алғысы!" :
+                "⭐ Золотой статус спонсора в профиле приложения\n⭐ Участие в голосовании за будущие функции\n⭐ Вечная признательность разработчиков и сообщества Казахстана!");
+
+        // Tab 5: Settings
+        tvSettingLangTitle.setText(isKz ? "ТІЛДІ ТАҢДАУ / ВЫБОР ЯЗЫКА" : "ВЫБОР ЯЗЫКА ИНТЕРФЕЙСА");
+        tvImmersionTitle.setText(isKz ? "100 күндік қазақ тілін үйрену" : "100-дневное изучение казахского языка");
+        tvImmersionDesc.setText(isKz ? "Таңғы ояну сериясымен бірге күнделікті жаңа сөздерді меңгеріңіз" : "Изучайте казахские слова каждый день вместе с утренней серией");
+        tvAdRemovalTitle.setText(isKz ? "ЖАРНАМАНЫ ӨШІРУ (2 000 ₸ МӘҢГІГЕ)" : "ОТКЛЮЧИТЬ РЕКЛАМУ НАВСЕГДА (2 000 ₸)");
+        tvLegalTitle.setText(isKz ? "ҚҰҚЫҚТЫҚ КЕЛІСІМДЕР ЖӘНЕ ҚҰПИЯЛЫЛЫҚ" : "ПРАВОВЫЕ СОГЛАШЕНИЯ И КОНФИДЕНЦИАЛЬНОСТЬ");
+        tvLegalDesc.setText(isKz ?
+                "Google Play талаптарына толық сәйкестік: ML Kit бейнекамераны тек құрылғыда өңдейді, ешқандай дерек сыртқа жіберілмейді немесе сақталмайды." :
+                "Соответствие Google Play: ML Kit обрабатывает камеру исключительно локально на вашем смартфоне, 0 байт данных передается вовне.");
+        btnSettingsLegal.setText(isKz ? "Келісімді толық оқу (Terms & Privacy)" : "Читать соглашения (Terms & Privacy)");
+        tvTutorialSettingTitle.setText(isKz ? "ҚОЛДАНУ НҰСҚАУЛЫҒЫ (ТУТОРИАЛ)" : "ИНСТРУКЦИЯ (ТУТОРИАЛ)");
+        tvTutorialSettingDesc.setText(isKz ?
+                "Оятар қалай жұмыс істейді? Қолды жүрекке қою және Тоқаевтың бейнеролигі туралы." :
+                "Как работает будильник? Стойка с рукой на сердце и видеообращение Президента.");
+        btnSettingsTutorial.setText(isKz ? "Нұсқаулықты қарау" : "Посмотреть инструкцию снова");
+
+        // Bottom Navigation Bar items
+        tvNavAlarms.setText(isKz ? "Оятарлар" : "Будильники");
+        tvNavStreak.setText(isKz ? "Серия 365" : "Серия 365");
+        tvNavWidgets.setText(isKz ? "Виджеттер" : "Виджеты");
+        tvNavDonation.setText(isKz ? "Қолдау 🇰🇿" : "Донат 🇰🇿");
+        tvNavSettings.setText(isKz ? "Баптаулар" : "Настройки");
+
+        updateStreakUI();
+        updateAdUI();
         switchTab(currentTab);
     }
 
     private void showOverflowMenu(View anchor) {
+        boolean isKz = LanguageProgressionManager.isKazakh(this);
         PopupMenu popup = new PopupMenu(this, anchor);
-        popup.getMenu().add(0, 1, 0, "📜 " + LanguageProgressionManager.getLocalizedText(this, "Правовые соглашения (Play Market)", "Құқықтық келісімдер (Play Market)", 1));
-        popup.getMenu().add(0, 2, 1, "🇰🇿 " + LanguageProgressionManager.getLocalizedText(this, "Поддержать разработчика", "Әзірлеушіні қолдау", 1));
-        popup.getMenu().add(0, 3, 2, "🚫 " + LanguageProgressionManager.getLocalizedText(this, "Отключить рекламу навсегда (2 000 ₸)", "Жарнаманы өшіру (2 000 ₸)", 1));
-        popup.getMenu().add(0, 4, 3, "ℹ️ " + LanguageProgressionManager.getLocalizedText(this, "Инструкция (Туториал)", "Қолдану нұсқаулығы", 1));
+        popup.getMenu().add(0, 1, 0, "📜 " + (isKz ? "Құқықтық келісімдер (Play Market)" : "Правовые соглашения (Play Market)"));
+        popup.getMenu().add(0, 2, 1, "🇰🇿 " + (isKz ? "Әзірлеушіні қолдау (Донат)" : "Поддержать разработчика (Донат)"));
+        popup.getMenu().add(0, 3, 2, "🚫 " + (isKz ? "Жарнаманы өшіру (2 000 ₸)" : "Отключить рекламу навсегда (2 000 ₸)"));
+        popup.getMenu().add(0, 4, 3, "ℹ️ " + (isKz ? "Қолдану нұсқаулығы" : "Инструкция (Туториал)"));
 
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
@@ -453,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
                 LegalAgreementsDialog.show(this);
                 return true;
             } else if (id == 2) {
-                DonationManager.showDonationDialog(this);
+                switchTab(3); // Navigate to dedicated donation tab
                 return true;
             } else if (id == 3) {
                 AdManager.showPurchaseRemoveAdsDialog(this, this::updateAdUI);
@@ -520,7 +672,8 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         if (requestCode == REQ_PERMISSIONS_CAMERA) {
             boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
             if (granted) {
-                Toast.makeText(this, "Камера сәтті рұқсат етілді / Камера разрешена", Toast.LENGTH_SHORT).show();
+                boolean isKz = LanguageProgressionManager.isKazakh(this);
+                Toast.makeText(this, isKz ? "Камераға рұқсат берілді" : "Камера разрешена для патриотической стойки", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -552,6 +705,8 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
+
+        boolean isKz = LanguageProgressionManager.isKazakh(this);
 
         TimePicker timePicker = dialog.findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
@@ -640,18 +795,20 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
             chipOnce.setBackgroundResource(isOnce ? R.drawable.bg_chip_selected : R.drawable.bg_chip_unselected);
             chipOnce.setTextColor(isOnce ? 0xFFFEC50C : 0xFF8DB4D6);
 
-            // Summary text
+            // Summary text in active language
             if (isEveryday) {
-                tvSelectedDaysSummary.setText("Қайталау: Күн сайын (апта бойы)");
+                tvSelectedDaysSummary.setText(isKz ? "Қайталау: Күн сайын (апта бойы)" : "Повтор: Каждый день (7 дней в неделю)");
             } else if (isWeekdays) {
-                tvSelectedDaysSummary.setText("Қайталау: Жұмыс күндері (Дс-Жм)");
+                tvSelectedDaysSummary.setText(isKz ? "Қайталау: Жұмыс күндері (Дс-Жм)" : "Повтор: Будни (Пн, Вт, Ср, Чт, Пт)");
             } else if (isWeekends) {
-                tvSelectedDaysSummary.setText("Қайталау: Демалыс күндері (Сб-Жс)");
+                tvSelectedDaysSummary.setText(isKz ? "Қайталау: Демалыс күндері (Сб-Жс)" : "Повтор: Выходные (Сб, Вс)");
             } else if (isOnce) {
-                tvSelectedDaysSummary.setText("Қайталаусыз: Бір рет ойнайды");
+                tvSelectedDaysSummary.setText(isKz ? "Қайталаусыз: Бір рет ойнайды" : "Без повтора: Сработает один раз");
             } else {
-                String[] names = {"Дс", "Сс", "Ср", "Бс", "Жм", "Сб", "Жс"};
-                StringBuilder sb = new StringBuilder("Қайталау: ");
+                String[] namesKz = {"Дс", "Сс", "Ср", "Бс", "Жм", "Сб", "Жс"};
+                String[] namesRu = {"Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"};
+                String[] names = isKz ? namesKz : namesRu;
+                StringBuilder sb = new StringBuilder(isKz ? "Қайталау: " : "Повтор: ");
                 for (int i = 0; i < 7; i++) {
                     if (selectedDays[i]) {
                         if (sb.length() > 10) sb.append(", ");
@@ -682,12 +839,16 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
             if (fullyEligible) {
                 layoutNotice.setBackgroundResource(R.drawable.bg_pill_eligible);
                 ivNoticeIcon.setImageResource(R.drawable.ic_check_circle);
-                tvNoticeDesc.setText("Серияға есептеледі! ✓ (Будни: 00:00–10:00, Выходные: 00:00–12:00)");
+                tvNoticeDesc.setText(isKz ?
+                        "Серияға есептеледі! ✓ (Будни: 00:00–10:00, Выходные: 00:00–12:00)" :
+                        "Засчитывается в серию! ✓ (Будни: 00:00–10:00, Выходные: 00:00–12:00)");
                 tvNoticeDesc.setTextColor(0xFF2ECC71);
             } else {
                 layoutNotice.setBackgroundResource(R.drawable.bg_pill_ineligible);
                 ivNoticeIcon.setImageResource(R.drawable.ic_calendar_streak);
-                tvNoticeDesc.setText("Серия үшін тым кеш! Будильник ойнайды, бірақ серия ұзармайды (будни >10:00, вых >12:00).");
+                tvNoticeDesc.setText(isKz ?
+                        "Серия үшін тым кеш! Будильник ойнайды, бірақ серия ұзармайды (будни >10:00, вых >12:00)." :
+                        "Слишком поздно для серии! Будильник сработает, но серия не будет продлена (будни >10:00, вых >12:00).");
                 tvNoticeDesc.setTextColor(0xFFF39C12);
             }
         };
@@ -742,7 +903,8 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
 
             alarm.setHour(h);
             alarm.setMinute(m);
-            alarm.setLabel(etLabel.getText().toString().trim().isEmpty() ? "Патриоттық ояну" : etLabel.getText().toString().trim());
+            String defaultLabel = isKz ? "Патриоттық ояну" : "Патриотический подъем";
+            alarm.setLabel(etLabel.getText().toString().trim().isEmpty() ? defaultLabel : etLabel.getText().toString().trim());
             alarm.setDaysOfWeek(Arrays.copyOf(selectedDays, 7));
             alarm.setEnabled(true);
 
@@ -760,6 +922,9 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
             updateStreakUI();
             dialog.dismiss();
 
+            // Trigger frequent ad on alarm save
+            AdManager.triggerFrequentAd(this, null);
+
             // Automatically show tutorial after setting an alarm
             showTutorialDialog();
         });
@@ -773,6 +938,7 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
     public void onToggle(AlarmItem alarm, boolean enabled) {
         AlarmStorage.updateAlarm(this, alarm);
         updateStreakUI();
+        AdManager.triggerFrequentAd(this, null);
     }
 
     @Override
@@ -784,7 +950,9 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
             AlarmStorage.deleteAlarm(this, alarm.getId());
             checkEmptyState();
             updateStreakUI();
-            Toast.makeText(this, "Оятар өшірілді / Будильник удален", Toast.LENGTH_SHORT).show();
+            boolean isKz = LanguageProgressionManager.isKazakh(this);
+            Toast.makeText(this, isKz ? "Оятар өшірілді" : "Будильник удален", Toast.LENGTH_SHORT).show();
+            AdManager.triggerFrequentAd(this, null);
         }
     }
 

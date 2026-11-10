@@ -15,6 +15,7 @@
         android:textSize="36sp" />
 
     <TextView
+        android:id="@+id/tv_donation_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
@@ -24,6 +25,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tv_donation_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"

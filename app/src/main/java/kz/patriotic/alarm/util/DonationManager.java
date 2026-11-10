@@ -22,6 +22,24 @@ public class DonationManager {
         }
         dialog.setContentView(R.layout.dialog_donation);
 
+        boolean isKz = LanguageProgressionManager.isKazakh(activity);
+
+        TextView tvTitle = dialog.findViewById(R.id.tv_donation_title);
+        TextView tvSubtitle = dialog.findViewById(R.id.tv_donation_subtitle);
+        TextView btnClose = dialog.findViewById(R.id.btn_close_donation);
+
+        if (tvTitle != null) {
+            tvTitle.setText(isKz ? "Әзірлеушіні қолдау" : "Поддержать разработчика");
+        }
+        if (tvSubtitle != null) {
+            tvSubtitle.setText(isKz ?
+                    "Қазақстанның отандық патриоттық оятарын дамытуға үлес қосыңыз!" :
+                    "Поддержите развитие казахстанского патриотического будильника!");
+        }
+        if (btnClose != null) {
+            btnClose.setText(isKz ? "Жабу" : "Закрыть");
+        }
+
         int[] buttonIds = new int[]{
                 R.id.btn_donate_100,
                 R.id.btn_donate_200,
@@ -39,7 +57,10 @@ public class DonationManager {
             TextView btn = dialog.findViewById(buttonIds[i]);
             if (btn != null) {
                 btn.setOnClickListener(v -> {
-                    Toast.makeText(activity, "Үлкен рақмет! Сіз жобаны " + amount + " ₸ көлемінде қолдадыңыз! 🇰🇿", Toast.LENGTH_LONG).show();
+                    String msg = isKz ?
+                            ("Үлкен рақмет! Сіз отандық жобаны " + amount + " ₸ көлемінде қолдадыңыз! 🇰🇿") :
+                            ("Огромное спасибо! Вы поддержали проект на " + amount + " ₸! 🇰🇿");
+                    Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
                     dialog.dismiss();
                 });
             }

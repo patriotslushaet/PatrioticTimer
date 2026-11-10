@@ -4,18 +4,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * Manages language switching (Russian / Kazakh) and the gradual 100-day language learning immersion:
- * For Russian language users, the interface dynamically transitions into Kazakh word by word over 100 days
- * as the user maintains their morning patriotic alarm streak!
+ * Manages language switching (Russian / Kazakh) and the optional 100-day language learning immersion.
+ * Ensures that choosing Russian genuinely keeps the entire UI in Russian,
+ * and choosing Kazakh genuinely keeps the entire UI in Kazakh without breaking the interface.
  */
 public class LanguageProgressionManager {
     private static final String PREF_NAME = "patriotic_lang_prefs";
     private static final String KEY_SELECTED_LANG = "selected_language"; // "ru" or "kz"
-    private static final String KEY_PROGRESSION_ENABLED = "progression_learning_enabled"; // default true
+    private static final String KEY_PROGRESSION_ENABLED = "progression_learning_enabled"; // default false so Russian is not overwritten
 
     public static String getLanguage(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return sp.getString(KEY_SELECTED_LANG, "ru");
+    }
+
+    public static boolean isKazakh(Context context) {
+        return "kz".equals(getLanguage(context));
     }
 
     public static void setLanguage(Context context, String lang) {
@@ -25,7 +29,7 @@ public class LanguageProgressionManager {
 
     public static boolean isProgressionEnabled(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return sp.getBoolean(KEY_PROGRESSION_ENABLED, true);
+        return sp.getBoolean(KEY_PROGRESSION_ENABLED, false);
     }
 
     public static void setProgressionEnabled(Context context, boolean enabled) {
@@ -39,23 +43,34 @@ public class LanguageProgressionManager {
     }
 
     /**
-     * If user explicitly selected Kazakh -> returns kzText.
-     * If user selected Russian:
-     *   - If 100-day progression is enabled and streak >= minStreakThreshold -> returns kzText (gradual immersion!)
-     *   - Otherwise -> returns ruText.
+     * Reliable localization method:
+     * - Returns kzText if Kazakh is selected.
+     * - Returns ruText if Russian is selected.
+     * Guaranteed never to break Russian or Kazakh.
+     */
+    public static String getLocalizedText(Context context, String ruText, String kzText) {
+        return isKazakh(context) ? kzText : ruText;
+    }
+
+    /**
+     * Backward-compatible overload.
      */
     public static String getLocalizedText(Context context, String ruText, String kzText, int minStreakThreshold) {
-        String lang = getLanguage(context);
-        if ("kz".equals(lang)) {
-            return kzText;
-        }
+        return getLocalizedText(context, ruText, kzText);
+    }
 
-        if (isProgressionEnabled(context)) {
-            int streak = StreakManager.getCurrentStreak(context);
-            if (streak >= minStreakThreshold) {
-                return kzText;
-            }
-        }
-        return ruText;
+    /**
+     * Educational phrase for the 100-day language learning feature.
+     */
+    public static String getDailyImmersionPhrase(Context context) {
+        int streak = StreakManager.getCurrentStreak(context);
+        String[] wordsKz = {
+                "Сәлемдесу (Приветствие)", "Отан (Родина)", "Ел (Страна)", "Жүрек (Сердце)", "Әнұран (Гимн)",
+                "Ту (Флаг)", "Елтаңба (Герб)", "Батыр (Герой)", "Тұлпар (Скакун)", "Қыран (Беркут)",
+                "Бейбітшілік (Мир)", "Бірлік (Единство)", "Достық (Дружба)", "Атамекен (Земля предков)", "Азаттық (Свобода)"
+        };
+        int idx = (streak - 1) % wordsKz.length;
+        if (idx < 0) idx = 0;
+        return wordsKz[idx];
     }
 }
