@@ -3,11 +3,14 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_widget_pattern"
+    android:background="@drawable/bg_widget_patriotic"
     android:orientation="vertical"
-    android:padding="14dp">
+    android:paddingLeft="12dp"
+    android:paddingTop="10dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="10dp">
 
-    <!-- Header with Kazakh Eagle/Sun and Tier Name -->
+    <!-- Header: Real Kazakhstan Flag + Titles -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,16 +18,17 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/widget_icon"
+            android:id="@+id/widget_flag"
             android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_height="18dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_kazakh_eagle_sun" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/flag_kz" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -32,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ҚАЗАҚСТАН ПАТРИОТЫ"
-                android:textColor="#FFCC00"
+                android:textColor="#FEC50C"
                 android:textSize="11sp"
                 android:textStyle="bold" />
 
@@ -41,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ранг: Бастау"
-                android:textColor="#33C5DB"
+                android:textColor="#00AFCA"
                 android:textSize="10sp" />
         </LinearLayout>
 
@@ -50,8 +54,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_pill_eligible"
-            android:paddingHorizontal="6dp"
-            android:paddingVertical="2dp"
+            android:paddingLeft="6dp"
+            android:paddingTop="2dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="2dp"
             android:text="2/2 запас"
             android:textColor="#2ECC71"
             android:textSize="9sp"
@@ -61,8 +67,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginVertical="8dp"
-        android:background="#26FFCC00" />
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="#26FEC50C" />
 
     <!-- Center: Streak counter -->
     <LinearLayout
@@ -73,15 +80,16 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:id="@+id/widget_streak_icon"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
             android:contentDescription="@string/streak_label"
             android:src="@drawable/ic_streak_flame" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:orientation="vertical">
 
             <TextView
@@ -97,12 +105,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Серия не прерывается"
-                android:textColor="#B2C9DF"
+                android:textColor="#8EA9C1"
                 android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Footer: Next Alarm and Progress -->
+    <!-- Footer: Next Alarm and Eligibility -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -119,10 +127,10 @@
             android:id="@+id/widget_next_alarm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
             android:layout_weight="1"
             android:text="Будильник: 06:45"
-            android:textColor="#FFD54F"
+            android:textColor="#FEC50C"
             android:textSize="10sp" />
 
         <TextView

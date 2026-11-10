@@ -1,45 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_kazakh"
     android:orientation="vertical"
     android:padding="20dp">
 
-    <!-- Header -->
+    <!-- Header with Real Kazakhstan Flag -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:contentDescription="Tutorial"
-            android:src="@drawable/ic_heart_hand" />
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="26dp"
+            android:background="@drawable/bg_card_caspian"
+            android:padding="1dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Flag of Kazakhstan"
+                android:scaleType="fitCenter"
+                android:src="@drawable/flag_kz" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tutorial_title"
-                android:textColor="#FFCC00"
-                android:textSize="16sp"
+                android:text="ИНСТРУКЦИЯ ПАТРИОТА"
+                android:textColor="#FEC50C"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tutorial_subtitle"
-                android:textColor="#33C5DB"
-                android:textSize="12sp" />
+                android:text="Порядок утреннего пробуждения"
+                android:textColor="#00AFCA"
+                android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -47,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginVertical="12dp"
-        android:background="#26FFCC00" />
+        android:background="#26FEC50C" />
 
     <!-- Step 1 -->
     <LinearLayout
@@ -57,13 +66,13 @@
         android:paddingVertical="4dp">
 
         <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@drawable/bg_pill_eligible"
             android:gravity="center"
             android:text="1"
             android:textColor="#2ECC71"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold" />
 
         <TextView
@@ -72,7 +81,7 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:lineSpacingExtra="2dp"
-            android:text="@string/tutorial_step_1"
+            android:text="В назначенное время заиграет Государственный Гимн Казахстана и запустится фронтальная камера."
             android:textColor="#FFFFFF"
             android:textSize="12sp" />
     </LinearLayout>
@@ -85,13 +94,13 @@
         android:paddingVertical="4dp">
 
         <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@drawable/bg_pill_eligible"
             android:gravity="center"
             android:text="2"
             android:textColor="#2ECC71"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold" />
 
         <TextView
@@ -100,7 +109,7 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:lineSpacingExtra="2dp"
-            android:text="@string/tutorial_step_2"
+            android:text="Встаньте прямо перед камерой во весь рост или по пояс, расправьте плечи."
             android:textColor="#FFFFFF"
             android:textSize="12sp" />
     </LinearLayout>
@@ -113,13 +122,13 @@
         android:paddingVertical="4dp">
 
         <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@drawable/bg_pill_eligible"
             android:gravity="center"
             android:text="3"
-            android:textColor="#FFCC00"
-            android:textSize="12sp"
+            android:textColor="#FEC50C"
+            android:textSize="11sp"
             android:textStyle="bold" />
 
         <TextView
@@ -128,8 +137,8 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:lineSpacingExtra="2dp"
-            android:text="@string/tutorial_step_3"
-            android:textColor="#FFD54F"
+            android:text="Приложите правую руку к сердцу (слева на груди) и удерживайте позу свыше 3 секунд до фиксации, затем стойте смирно до конца гимна."
+            android:textColor="#FEC50C"
             android:textSize="12sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -142,13 +151,13 @@
         android:paddingVertical="4dp">
 
         <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@drawable/bg_pill_eligible"
             android:gravity="center"
             android:text="4"
             android:textColor="#2ECC71"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold" />
 
         <TextView
@@ -157,7 +166,7 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:lineSpacingExtra="2dp"
-            android:text="@string/tutorial_step_4"
+            android:text="После гимна включится обращение Президента К.-Ж. Токаева под патриотический саундтрек."
             android:textColor="#FFFFFF"
             android:textSize="12sp" />
     </LinearLayout>
@@ -170,13 +179,13 @@
         android:paddingVertical="4dp">
 
         <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@drawable/bg_pill_eligible"
             android:gravity="center"
             android:text="5"
             android:textColor="#2ECC71"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold" />
 
         <TextView
@@ -185,7 +194,7 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:lineSpacingExtra="2dp"
-            android:text="@string/tutorial_step_5"
+            android:text="Будильник оценит вашу выправку (смирность и скорость вставания) и добавит +1 день к патриотической серии!"
             android:textColor="#FFFFFF"
             android:textSize="12sp" />
     </LinearLayout>
@@ -193,11 +202,12 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dismiss_tutorial"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/kz_gold"
-        android:text="@string/tutorial_btn_ready"
-        android:textColor="#071A2C"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:text="Бәрі түсінікті (Всё понятно)"
+        android:textColor="#061320"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:cornerRadius="10dp" />
 </LinearLayout>

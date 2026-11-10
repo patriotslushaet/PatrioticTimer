@@ -52,14 +52,14 @@ public class RoadmapAdapter extends RecyclerView.Adapter<RoadmapAdapter.TierView
         boolean isCurrent = currentStreakDays >= tier.getMinDays() && currentStreakDays <= tier.getMaxDays();
         if (isCurrent) {
             holder.card.setCardBackgroundColor(0xFF143B61);
-            holder.tvTitle.setTextColor(0xFFFFCC00);
+            holder.tvTitle.setTextColor(0xFFFEC50C);
             holder.btnPreview.setText("Текущий ✓");
             holder.btnPreview.setTextColor(0xFF2ECC71);
         } else {
-            holder.card.setCardBackgroundColor(0xFF0D2845);
+            holder.card.setCardBackgroundColor(0xFF0B2035);
             holder.tvTitle.setTextColor(0xFFFFFFFF);
-            holder.btnPreview.setText("Примерить");
-            holder.btnPreview.setTextColor(0xFF33C5DB);
+            holder.btnPreview.setText("Уровень " + (tier.getTierIndex() + 1));
+            holder.btnPreview.setTextColor(0xFF8EA9C1);
         }
 
         try {
@@ -67,7 +67,7 @@ public class RoadmapAdapter extends RecyclerView.Adapter<RoadmapAdapter.TierView
             holder.tvDaysRange.setTextColor(accent);
         } catch (Exception ignored) {}
 
-        holder.btnPreview.setOnClickListener(v -> {
+        holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onSelect(tier);
         });
     }

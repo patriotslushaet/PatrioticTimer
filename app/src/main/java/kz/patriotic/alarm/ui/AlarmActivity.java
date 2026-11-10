@@ -12,7 +12,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
@@ -55,7 +54,7 @@ public class AlarmActivity extends AppCompatActivity {
     private final PoseTracker poseTracker = new PoseTracker();
 
     private boolean isFinished = false;
-    private int anthemDurationTotalMs = 103000; // ~1:43
+    private int anthemDurationTotalMs = 110000; // 01:50
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,11 +90,6 @@ public class AlarmActivity extends AppCompatActivity {
         ivHeartTarget = findViewById(R.id.iv_heart_target);
         ivSilhouette = findViewById(R.id.iv_silhouette);
 
-        findViewById(R.id.btn_skip_test).setOnClickListener(v -> {
-            Toast.makeText(this, "Переход к видео Токаева...", Toast.LENGTH_SHORT).show();
-            proceedToTokayevVideo();
-        });
-
         poseTracker.startSession();
     }
 
@@ -123,15 +117,12 @@ public class AlarmActivity extends AppCompatActivity {
 
                 imageAnalysis.setAnalyzer(cameraExecutor, this::analyzeImageFrame);
 
-                // Use Front-Facing Selfie Camera
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
                 cameraProvider.unbindAll();
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis);
 
             } catch (Exception e) {
                 Log.e(TAG, "Failed to bind camera: " + e.getMessage());
-                // Fallback simulation in case front camera isn't accessible on emulator
-                startSimulationFallback();
             }
         }, ContextCompat.getMainExecutor(this));
     }
@@ -151,7 +142,7 @@ public class AlarmActivity extends AppCompatActivity {
                         PoseAnalysisResult result = poseTracker.analyzePose(pose);
                         runOnUiThread(() -> updatePoseFeedback(result));
                     })
-                    .addOnFailureListener(e -> Log.e(TAG, "Pose detection error: " + e.getMessage()))
+                    .addOnFailureListener(e -> Log.e(TAG, "Pose error: " + e.getMessage()))
                     .addOnCompleteListener(task -> imageProxy.close());
         } else {
             imageProxy.close();
@@ -166,25 +157,39 @@ public class AlarmActivity extends AppCompatActivity {
         switch (result.getState()) {
             case SEARCHING:
                 tvPoseStatus.setBackgroundResource(R.drawable.bg_btn_kazakh_blue);
+                tvPoseStatus.setTextColor(0xFFFFFFFF);
                 ivHeartTarget.setVisibility(View.GONE);
                 break;
             case STAND_STRAIGHT:
                 tvPoseStatus.setBackgroundResource(R.drawable.bg_pill_ineligible);
+                tvPoseStatus.setTextColor(0xFFFEC50C);
                 ivHeartTarget.setVisibility(View.GONE);
                 break;
             case HAND_ON_HEART:
                 tvPoseStatus.setBackgroundResource(R.drawable.bg_pill_ineligible);
+                tvPoseStatus.setTextColor(0xFFFEC50C);
                 ivHeartTarget.setVisibility(View.VISIBLE);
                 break;
-            case CORRECT_POSTURE:
+            case HOLDING_POSE:
+                // User is holding! Show pulsing countdown
+                tvPoseStatus.setBackgroundResource(R.drawable.bg_pill_ineligible);
+                tvPoseStatus.setTextColor(0xFFFEC50C);
+                ivHeartTarget.setVisibility(View.VISIBLE);
+                break;
+            case CONFIRMED_CORRECT:
+                // >= 3 SECONDS HELD: Confirmed!
                 tvPoseStatus.setBackgroundResource(R.drawable.bg_btn_kazakh_gold);
-                tvPoseStatus.setTextColor(0xFF071A2C);
+                tvPoseStatus.setTextColor(0xFF061320);
                 ivHeartTarget.setVisibility(View.VISIBLE);
                 break;
         }
 
         tvLiveStillness.setText(String.format(Locale.US, "%.0f%%", result.getStillnessScore()));
-        tvLiveReaction.setText(String.format(Locale.US, "%.1f сек", poseTracker.getAcquisitionTimeSec()));
+        if (poseTracker.isPoseConfirmed()) {
+            tvLiveReaction.setText(String.format(Locale.US, "%.1f сек", poseTracker.getAcquisitionTimeSec()));
+        } else {
+            tvLiveReaction.setText("Фиксация...");
+        }
     }
 
     private void startAnthemPlayback() {
@@ -203,7 +208,6 @@ public class AlarmActivity extends AppCompatActivity {
             Log.e(TAG, "Anthem playback failed: " + e.getMessage());
         }
 
-        // Anthem timer & progress countdown
         anthemTimer = new CountDownTimer(anthemDurationTotalMs, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -214,41 +218,13 @@ public class AlarmActivity extends AppCompatActivity {
                 int secondsLeft = (int) (millisUntilFinished / 1000);
                 int mins = secondsLeft / 60;
                 int secs = secondsLeft % 60;
-                tvAnthemTimer.setText(String.format(Locale.US, "Гимн Казахстана (%02d:%02d)", mins, secs));
+                tvAnthemTimer.setText(String.format(Locale.US, "«Менің Қазақстаным» (%02d:%02d)", mins, secs));
             }
 
             @Override
             public void onFinish() {
                 proceedToTokayevVideo();
             }
-        }.start();
-    }
-
-    private void startSimulationFallback() {
-        // Fallback simulation timer if camera hardware is unavailable
-        new CountDownTimer(10000, 1000) {
-            int step = 0;
-            @Override
-            public void onTick(long l) {
-                step++;
-                if (step == 2) {
-                    updatePoseFeedback(new PoseAnalysisResult(
-                            PoseAnalysisResult.State.HAND_ON_HEART,
-                            "Қолыңызды жүрекке қойыңыз",
-                            "Приложите правую руку к сердцу!",
-                            96f, 0.7f, false
-                    ));
-                } else if (step >= 4) {
-                    updatePoseFeedback(new PoseAnalysisResult(
-                            PoseAnalysisResult.State.CORRECT_POSTURE,
-                            "ТҰРЫС ДҰРЫС!",
-                            "ПОЗА ПРИНЯТА! Стойте смирно под звуки гимна!",
-                            98f, 1f, true
-                    ));
-                }
-            }
-            @Override
-            public void onFinish() {}
         }.start();
     }
 
@@ -271,7 +247,7 @@ public class AlarmActivity extends AppCompatActivity {
         Intent intent = new Intent(this, TokayevVideoActivity.class);
         intent.putExtra("stillness_score", finalStillness);
         intent.putExtra("reaction_time", finalReaction);
-        intent.putExtra("anthem_duration", "01:43");
+        intent.putExtra("anthem_duration", "01:50");
         startActivity(intent);
         finish();
     }

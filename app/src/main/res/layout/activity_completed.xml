@@ -16,89 +16,87 @@
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
-            android:paddingTop="48dp"
-            android:paddingBottom="40dp">
+            android:paddingTop="36dp"
+            android:paddingBottom="36dp">
 
-            <!-- Celebratory National Emblem -->
-            <ImageView
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:contentDescription="@string/done_title"
-                android:src="@drawable/ic_kazakh_eagle_sun" />
+            <!-- Real Kazakhstan Flag / Emblem Container -->
+            <FrameLayout
+                android:layout_width="120dp"
+                android:layout_height="80dp"
+                android:background="@drawable/bg_card_caspian"
+                android:padding="3dp">
 
-            <!-- "ВЫПОЛНЕНО!" Banner -->
+                <ImageView
+                    android:id="@+id/iv_flag_emblem"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/done_title"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/flag_kz" />
+            </FrameLayout>
+
             <TextView
                 android:id="@+id/tv_completed_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/done_title"
-                android:textColor="#FFCC00"
-                android:textSize="32sp"
+                android:layout_marginTop="14dp"
+                android:text="ВЫПОЛНЕНО"
+                android:textColor="#FEC50C"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_completed_kz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="ЖАРАЙСЫҢ, ПАТРИОТ!"
+                android:textColor="#00AFCA"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/done_kz"
-                android:textColor="#33C5DB"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/done_subtitle"
-                android:textColor="#B2C9DF"
-                android:textSize="13sp" />
+                android:layout_marginTop="2dp"
+                android:text="Патриотический долг выполнен безупречно"
+                android:textColor="#8EA9C1"
+                android:textSize="12sp" />
 
             <!-- Streak Extension Hero Banner -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_streak_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/kz_navy_card"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="3dp">
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:orientation="vertical"
+                    android:padding="14dp">
 
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:contentDescription="Streak flame"
-                        android:src="@drawable/ic_streak_flame" />
-
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_streak_result"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
+                        android:text="Серия: 16 дней подряд! (+1)"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/tv_streak_result"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Серия продлена: 16 дней подряд!"
-                            android:textColor="#FFFFFF"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_tier_result"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Ранг: Тұлпар • 2/2 пропусков доступно"
-                            android:textColor="#33C5DB"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_tier_result"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Ранг: Тұлпар • Доступно пропусков: 2/2"
+                        android:textColor="#00AFCA"
+                        android:textSize="12sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -106,20 +104,21 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Статистика выправки и стойки:"
-                android:textColor="#B2C9DF"
-                android:textSize="13sp"
+                android:layout_marginTop="18dp"
+                android:text="ПОКАЗАТЕЛИ ДИСЦИПЛИНЫ И ВЫПРАВКИ"
+                android:textColor="#8EA9C1"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
             <!-- Stat 1: Stillness -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_stat_stillness"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:cardBackgroundColor="#0D2845"
+                app:cardBackgroundColor="@color/kz_navy_card"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="2dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -134,8 +133,8 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:contentDescription="Stillness"
                             android:src="@drawable/ic_stat_stillness" />
 
@@ -146,7 +145,7 @@
                             android:layout_weight="1"
                             android:text="Смирность (неподвижность)"
                             android:textColor="#FFFFFF"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -154,8 +153,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="98%"
-                            android:textColor="#FFCC00"
-                            android:textSize="18sp"
+                            android:textColor="#FEC50C"
+                            android:textSize="20sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -165,20 +164,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:lineSpacingExtra="2dp"
-                        android:text="Идеальная дисциплина: вы стояли не шелохнувшись во время исполнения Государственного Гимна!"
-                        android:textColor="#B2C9DF"
+                        android:text="Идеальная выправка («Сап түзеу»): вы стояли как почетный караул — абсолютно смирно без лишних движений!"
+                        android:textColor="#8EA9C1"
                         android:textSize="11sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- Stat 2: Reaction Time -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_stat_reaction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:cardBackgroundColor="#0D2845"
+                app:cardBackgroundColor="@color/kz_navy_card"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="2dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -193,8 +193,8 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:contentDescription="Reaction time"
                             android:src="@drawable/ic_stat_speed" />
 
@@ -205,16 +205,16 @@
                             android:layout_weight="1"
                             android:text="Время вставания в позу"
                             android:textColor="#FFFFFF"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_stat_reaction_val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2.6 сек"
-                            android:textColor="#33C5DB"
-                            android:textSize="18sp"
+                            android:text="2.8 сек"
+                            android:textColor="#00AFCA"
+                            android:textSize="20sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -224,20 +224,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:lineSpacingExtra="2dp"
-                        android:text="Молниеносная реакция: принятие правильной стойки с рукой на сердце за считанные секунды."
-                        android:textColor="#B2C9DF"
+                        android:text="Молниеносная реакция патриота: вы приняли ровную стойку с рукой на сердце за считанные секунды!"
+                        android:textColor="#8EA9C1"
                         android:textSize="11sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- Stat 3: Anthem Duration -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_stat_anthem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:cardBackgroundColor="#0D2845"
+                app:cardBackgroundColor="@color/kz_navy_card"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="2dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -252,8 +253,8 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:contentDescription="Anthem"
                             android:src="@drawable/ic_check_circle" />
 
@@ -262,18 +263,18 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:text="Продолжительность гимна"
+                            android:text="Государственный Гимн Казахстана"
                             android:textColor="#FFFFFF"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_stat_anthem_val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="01:43"
+                            android:text="01:50"
                             android:textColor="#2ECC71"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -281,24 +282,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Полный Государственный Гимн Республики Казахстан прозвучал до победной ноты."
-                        android:textColor="#B2C9DF"
+                        android:text="Официальный гимн («Менің Қазақстаным») выслушан стоя с рукой на сердце."
+                        android:textColor="#8EA9C1"
                         android:textSize="11sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Return to Main Menu Button -->
+            <!-- Return Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_return_main"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="28dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="24dp"
                 android:backgroundTint="@color/kz_gold"
-                android:text="@string/btn_to_main"
-                android:textColor="#071A2C"
-                android:textSize="15sp"
+                android:text="В главное меню"
+                android:textColor="#061320"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="12dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

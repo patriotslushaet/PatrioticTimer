@@ -9,46 +9,48 @@ import com.google.mlkit.vision.pose.PoseLandmark;
 import java.util.LinkedList;
 
 public class PoseTracker {
-    private long startTimeMillis = 0;
-    private long firstCorrectPoseMillis = 0;
+    public static final long REQUIRED_HOLD_MS = 3000L; // 3 seconds continuous hold required!
+
+    private long sessionStartMillis = 0;
+    private long currentPoseHoldStartMillis = 0;
+    private boolean isPoseConfirmed = false;
     private float recordedAcquisitionTimeSec = 0f;
 
-    // Stillness metrics tracking
-    private final LinkedList<Float> recentJitters = new LinkedList<>();
+    // Moving average of coordinates for jitter filtering
     private PointF lastNosePos = null;
     private PointF lastLeftShoulderPos = null;
     private PointF lastRightShoulderPos = null;
     private PointF lastRightWristPos = null;
 
-    private float cumulativeStillness = 95f;
-    private int framesInCorrectPose = 0;
-    private int totalFramesAnalyzed = 0;
+    private final LinkedList<Float> jitterHistory = new LinkedList<>();
+    private float runningStillness = 97.0f;
 
     public void startSession() {
-        startTimeMillis = SystemClock.elapsedRealtime();
-        firstCorrectPoseMillis = 0;
+        sessionStartMillis = SystemClock.elapsedRealtime();
+        currentPoseHoldStartMillis = 0;
+        isPoseConfirmed = false;
         recordedAcquisitionTimeSec = 0f;
-        recentJitters.clear();
+        jitterHistory.clear();
         lastNosePos = null;
         lastLeftShoulderPos = null;
         lastRightShoulderPos = null;
         lastRightWristPos = null;
-        cumulativeStillness = 95f;
-        framesInCorrectPose = 0;
-        totalFramesAnalyzed = 0;
+        runningStillness = 98.0f;
     }
 
     public PoseAnalysisResult analyzePose(Pose pose) {
-        totalFramesAnalyzed++;
+        long now = SystemClock.elapsedRealtime();
 
         if (pose == null) {
+            currentPoseHoldStartMillis = 0;
             return new PoseAnalysisResult(
                     PoseAnalysisResult.State.SEARCHING,
                     "Камера алдына тұрыңыз",
-                    "Встаньте перед камерой во весь рост или по пояс",
-                    getAverageStillness(),
+                    "Встаньте перед фронтальной камерой",
+                    runningStillness,
                     0f,
-                    false
+                    false,
+                    0
             );
         }
 
@@ -58,16 +60,18 @@ public class PoseTracker {
         PoseLandmark rightWrist = pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST);
         PoseLandmark leftWrist = pose.getPoseLandmark(PoseLandmark.LEFT_WRIST);
 
-        // Check if upper body is reasonably visible
+        // Check shoulder visibility
         if (leftShoulder == null || rightShoulder == null ||
-                leftShoulder.getInFrameLikelihood() < 0.45f || rightShoulder.getInFrameLikelihood() < 0.45f) {
+                leftShoulder.getInFrameLikelihood() < 0.40f || rightShoulder.getInFrameLikelihood() < 0.40f) {
+            currentPoseHoldStartMillis = 0;
             return new PoseAnalysisResult(
                     PoseAnalysisResult.State.SEARCHING,
-                    "Иығыңыз анық көрінуі керек",
-                    "Отойдите немного назад, чтобы плечи были в кадре",
-                    getAverageStillness(),
+                    "Иығыңыз толық көрінсін",
+                    "Отойдите назад, чтобы плечи были в кадре",
+                    runningStillness,
                     0.2f,
-                    false
+                    false,
+                    0
             );
         }
 
@@ -75,169 +79,194 @@ public class PoseTracker {
         PointF pRightShoulder = rightShoulder.getPosition();
         float shoulderDist = (float) Math.hypot(pLeftShoulder.x - pRightShoulder.x, pLeftShoulder.y - pRightShoulder.y);
 
-        if (shoulderDist < 40f) {
+        if (shoulderDist < 35f) {
+            currentPoseHoldStartMillis = 0;
             return new PoseAnalysisResult(
                     PoseAnalysisResult.State.SEARCHING,
                     "Камераға жақындаңыз",
                     "Подойдите ближе к камере",
-                    getAverageStillness(),
+                    runningStillness,
                     0.3f,
-                    false
+                    false,
+                    0
             );
         }
 
-        // Check upright posture: shoulder tilt shouldn't be extreme
+        // Upright check: shoulders should be fairly horizontal
         float dyShoulders = Math.abs(pLeftShoulder.y - pRightShoulder.y);
-        if (dyShoulders > 0.45f * shoulderDist) {
+        if (dyShoulders > 0.40f * shoulderDist) {
+            currentPoseHoldStartMillis = 0;
             return new PoseAnalysisResult(
                     PoseAnalysisResult.State.STAND_STRAIGHT,
-                    "Тік тұрыңыз, иығыңызды теңестіріңіз",
+                    "Тік тұрыңыз, иықты тең ұстаңыз",
                     "Выпрямитесь ровно, держите плечи прямо!",
-                    getAverageStillness(),
-                    0.5f,
-                    false
+                    runningStillness,
+                    0.4f,
+                    false,
+                    0
             );
         }
 
-        // Heart target point:
-        // Anatomic heart is on the left side of chest (around left shoulder x, slightly lower than shoulder)
+        // Heart target area:
+        // On user's left chest (near left shoulder X, slightly below left shoulder Y)
         float heartX = pLeftShoulder.x;
         float heartY = pLeftShoulder.y + (0.35f * shoulderDist);
 
-        // Right hand on heart check:
-        // In selfie mode / anatomical landmarks, either rightWrist or user's hand crosses over towards left chest
-        boolean handOnHeart = false;
-        float handProximity = 0f;
+        boolean isHandOnHeart = false;
+        float proximity = 0f;
 
+        // Check right wrist
         if (rightWrist != null && rightWrist.getInFrameLikelihood() > 0.35f) {
             PointF pRightWrist = rightWrist.getPosition();
-            float distToHeart = (float) Math.hypot(pRightWrist.x - heartX, pRightWrist.y - heartY);
-            handProximity = Math.max(0f, 1f - (distToHeart / (1.1f * shoulderDist)));
-
-            // If right wrist is within 0.7 * shoulderDist from heart
-            if (distToHeart < 0.75f * shoulderDist) {
-                handOnHeart = true;
+            float dist = (float) Math.hypot(pRightWrist.x - heartX, pRightWrist.y - heartY);
+            proximity = Math.max(0f, 1f - (dist / (1.2f * shoulderDist)));
+            if (dist < 0.85f * shoulderDist) {
+                isHandOnHeart = true;
             }
         }
 
-        // Also check if left wrist was placed on heart (for ambidextrous tolerance, but guide right hand)
-        if (!handOnHeart && leftWrist != null && leftWrist.getInFrameLikelihood() > 0.4f) {
+        // Fallback for mirror/left wrist tolerance
+        if (!isHandOnHeart && leftWrist != null && leftWrist.getInFrameLikelihood() > 0.40f) {
             PointF pLeftWrist = leftWrist.getPosition();
-            float distToHeart = (float) Math.hypot(pLeftWrist.x - heartX, pLeftWrist.y - heartY);
-            if (distToHeart < 0.65f * shoulderDist) {
-                handOnHeart = true;
-                handProximity = 0.85f;
+            float dist = (float) Math.hypot(pLeftWrist.x - heartX, pLeftWrist.y - heartY);
+            if (dist < 0.70f * shoulderDist) {
+                isHandOnHeart = true;
+                proximity = 0.85f;
             }
         }
 
-        // Calculate motion jitter for stillness
+        // Track stillness
         float frameJitter = calculateMotionJitter(nose, pLeftShoulder, pRightShoulder, rightWrist, shoulderDist);
         trackStillness(frameJitter);
 
-        if (!handOnHeart) {
+        if (!isHandOnHeart) {
+            currentPoseHoldStartMillis = 0;
             return new PoseAnalysisResult(
                     PoseAnalysisResult.State.HAND_ON_HEART,
-                    "Оң қолыңызды сол жақ жүрекке қойыңыз!",
+                    "Оң қолды сол жақ жүрекке қойыңыз",
                     "Приложите правую руку к сердцу (слева на груди)!",
-                    getAverageStillness(),
-                    handProximity,
-                    false
+                    runningStillness,
+                    proximity,
+                    false,
+                    0
             );
         }
 
-        // Correct Posture Achieved!
-        framesInCorrectPose++;
-        if (firstCorrectPoseMillis == 0) {
-            firstCorrectPoseMillis = SystemClock.elapsedRealtime();
-            if (startTimeMillis > 0) {
-                recordedAcquisitionTimeSec = Math.max(0.8f, (firstCorrectPoseMillis - startTimeMillis) / 1000f);
+        // User is currently in the correct posture!
+        if (currentPoseHoldStartMillis == 0) {
+            currentPoseHoldStartMillis = now;
+        }
+
+        long holdDurationMs = now - currentPoseHoldStartMillis;
+        long remainingHoldMs = REQUIRED_HOLD_MS - holdDurationMs;
+
+        // REQUIREMENT: Check if held for MORE THAN 3 SECONDS
+        if (remainingHoldMs > 0) {
+            int secondsLeft = (int) Math.ceil(remainingHoldMs / 1000.0);
+            return new PoseAnalysisResult(
+                    PoseAnalysisResult.State.HOLDING_POSE,
+                    "Тұрысты ұстаңыз: " + secondsLeft + " сек...",
+                    "Удерживайте позу: " + secondsLeft + " сек...",
+                    runningStillness,
+                    1.0f,
+                    false,
+                    secondsLeft
+            );
+        }
+
+        // HELD FOR >= 3 SECONDS: OFFICIAL CONFIRMATION!
+        if (!isPoseConfirmed) {
+            isPoseConfirmed = true;
+            if (sessionStartMillis > 0) {
+                // Acquisition time is when the user reached the stance that was held
+                recordedAcquisitionTimeSec = Math.max(1.0f, (currentPoseHoldStartMillis - sessionStartMillis) / 1000f);
             } else {
-                recordedAcquisitionTimeSec = 2.4f;
+                recordedAcquisitionTimeSec = 3.1f;
             }
         }
 
         return new PoseAnalysisResult(
-                PoseAnalysisResult.State.CORRECT_POSTURE,
+                PoseAnalysisResult.State.CONFIRMED_CORRECT,
                 "ТҰРЫС ДҰРЫС! Қозғалмай тұрыңыз!",
-                "ПОЗА ПРИНЯТА! Стойте смирно под звуки гимна!",
-                getAverageStillness(),
+                "ТҰРЫС ДҰРЫС! Поза зафиксирована! Стойте смирно!",
+                runningStillness,
                 1.0f,
-                true
+                true,
+                0
         );
     }
 
-    private float calculateMotionJitter(PoseLandmark nose, PointF leftShoulder, PointF rightShoulder,
+    private float calculateMotionJitter(PoseLandmark nose, PointF pLeftShoulder, PointF pRightShoulder,
                                         PoseLandmark rightWrist, float shoulderDist) {
-        float jitterSum = 0f;
-        int points = 0;
+        float totalDist = 0f;
+        int pts = 0;
 
         if (nose != null) {
             PointF cur = nose.getPosition();
             if (lastNosePos != null) {
-                jitterSum += Math.hypot(cur.x - lastNosePos.x, cur.y - lastNosePos.y);
-                points++;
+                totalDist += Math.hypot(cur.x - lastNosePos.x, cur.y - lastNosePos.y);
+                pts++;
             }
             lastNosePos = new PointF(cur.x, cur.y);
         }
 
         if (lastLeftShoulderPos != null) {
-            jitterSum += Math.hypot(leftShoulder.x - lastLeftShoulderPos.x, leftShoulder.y - lastLeftShoulderPos.y);
-            points++;
+            totalDist += Math.hypot(pLeftShoulder.x - lastLeftShoulderPos.x, pLeftShoulder.y - lastLeftShoulderPos.y);
+            pts++;
         }
-        lastLeftShoulderPos = new PointF(leftShoulder.x, leftShoulder.y);
+        lastLeftShoulderPos = new PointF(pLeftShoulder.x, pLeftShoulder.y);
 
         if (lastRightShoulderPos != null) {
-            jitterSum += Math.hypot(rightShoulder.x - lastRightShoulderPos.x, rightShoulder.y - lastRightShoulderPos.y);
-            points++;
+            totalDist += Math.hypot(pRightShoulder.x - lastRightShoulderPos.x, pRightShoulder.y - lastRightShoulderPos.y);
+            pts++;
         }
-        lastRightShoulderPos = new PointF(rightShoulder.x, rightShoulder.y);
+        lastRightShoulderPos = new PointF(pRightShoulder.x, pRightShoulder.y);
 
         if (rightWrist != null) {
             PointF cur = rightWrist.getPosition();
             if (lastRightWristPos != null) {
-                jitterSum += Math.hypot(cur.x - lastRightWristPos.x, cur.y - lastRightWristPos.y);
-                points++;
+                totalDist += Math.hypot(cur.x - lastRightWristPos.x, cur.y - lastRightWristPos.y);
+                pts++;
             }
             lastRightWristPos = new PointF(cur.x, cur.y);
         }
 
-        if (points > 0 && shoulderDist > 0) {
-            return (jitterSum / points) / shoulderDist;
+        if (pts > 0 && shoulderDist > 0) {
+            return (totalDist / pts) / shoulderDist;
         }
-        return 0.01f;
+        return 0.008f;
     }
 
     private void trackStillness(float jitter) {
-        recentJitters.add(jitter);
-        if (recentJitters.size() > 30) {
-            recentJitters.removeFirst();
+        jitterHistory.add(jitter);
+        if (jitterHistory.size() > 25) {
+            jitterHistory.removeFirst();
         }
 
-        // Low jitter (< 0.02) yields 98%-100% stillness
         float avgJitter = 0f;
-        for (float j : recentJitters) avgJitter += j;
-        avgJitter /= Math.max(1, recentJitters.size());
+        for (float j : jitterHistory) avgJitter += j;
+        avgJitter /= Math.max(1, jitterHistory.size());
 
-        float frameStillness = Math.max(70f, Math.min(100f, 100f - (avgJitter * 280f)));
-        cumulativeStillness = (cumulativeStillness * 0.92f) + (frameStillness * 0.08f);
+        float instantStillness = Math.max(75f, Math.min(100f, 100f - (avgJitter * 260f)));
+        runningStillness = (runningStillness * 0.90f) + (instantStillness * 0.10f);
     }
 
     public float getAverageStillness() {
-        return Math.round(cumulativeStillness * 10f) / 10f;
+        return Math.round(runningStillness * 10f) / 10f;
     }
 
     public float getAcquisitionTimeSec() {
         if (recordedAcquisitionTimeSec > 0f) {
             return Math.round(recordedAcquisitionTimeSec * 10f) / 10f;
         }
-        if (startTimeMillis > 0) {
-            float elapsed = (SystemClock.elapsedRealtime() - startTimeMillis) / 1000f;
-            return Math.round(Math.min(elapsed, 4.5f) * 10f) / 10f;
+        if (sessionStartMillis > 0) {
+            float elapsed = (SystemClock.elapsedRealtime() - sessionStartMillis) / 1000f;
+            return Math.round(Math.max(3.0f, Math.min(elapsed, 6.0f)) * 10f) / 10f;
         }
         return 3.2f;
     }
 
-    public int getFramesInCorrectPose() {
-        return framesInCorrectPose;
+    public boolean isPoseConfirmed() {
+        return isPoseConfirmed;
     }
 }

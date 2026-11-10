@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -35,7 +34,6 @@ import java.util.List;
 import kz.patriotic.alarm.R;
 import kz.patriotic.alarm.model.AlarmItem;
 import kz.patriotic.alarm.model.StreakTier;
-import kz.patriotic.alarm.util.AlarmScheduler;
 import kz.patriotic.alarm.util.AlarmStorage;
 import kz.patriotic.alarm.util.StreakManager;
 
@@ -47,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
     private TextView tvStreakNumber, tvStreakMisses, tvTierName, tvTierDesc;
     private View previewWidgetRoot;
     private TextView widgetStreakCount, widgetTierTitle, widgetMisses, widgetNextAlarm, widgetStatusBadge;
+    private ImageView widgetFlag;
     private RecyclerView recyclerAlarms;
     private AlarmsAdapter alarmsAdapter;
     private List<AlarmItem> alarmList;
@@ -88,25 +87,17 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         widgetMisses = previewWidgetRoot.findViewById(R.id.widget_misses);
         widgetNextAlarm = previewWidgetRoot.findViewById(R.id.widget_next_alarm);
         widgetStatusBadge = previewWidgetRoot.findViewById(R.id.widget_status_badge);
+        widgetFlag = previewWidgetRoot.findViewById(R.id.widget_flag);
 
         recyclerAlarms = findViewById(R.id.recycler_alarms);
 
         findViewById(R.id.btn_tutorial).setOnClickListener(v -> showTutorialDialog());
         findViewById(R.id.btn_view_roadmap).setOnClickListener(v -> showRoadmapDialog());
-        findViewById(R.id.btn_simulate_streak).setOnClickListener(v -> showSimulateStreakDialog());
 
         ExtendedFloatingActionButton fabAdd = findViewById(R.id.fab_add_alarm);
         fabAdd.setOnClickListener(v -> showEditAlarmDialog(null));
 
         findViewById(R.id.btn_add_alarm_header).setOnClickListener(v -> showEditAlarmDialog(null));
-
-        findViewById(R.id.btn_test_alarm).setOnClickListener(v -> {
-            Toast.makeText(this, "Запуск демонстрации патриотического подъема...", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, AlarmActivity.class);
-            intent.putExtra("is_demo", true);
-            intent.putExtra("alarm_label", "Тест Патриотического Будильника");
-            startActivity(intent);
-        });
     }
 
     private void setupAlarmsRecycler() {
@@ -135,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         tvTierDesc.setText(tier.getDescription() + " • До след. ранга: " + daysLeft + " дн.");
 
         // Update In-App Widget Preview
+        if (widgetFlag != null) {
+            widgetFlag.setImageResource(R.drawable.flag_kz);
+        }
         widgetStreakCount.setText(streak + " ДНЕЙ");
         widgetTierTitle.setText("Ранг: " + tier.getKzTitle() + " (" + tier.getRuTitle() + ")");
         try {
@@ -209,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         if (requestCode == REQ_PERMISSIONS_CAMERA) {
             boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
             if (granted) {
-                Toast.makeText(this, "Камера разрешена для патриотической стойки!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Камера разрешена для патриотической стойки", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -272,7 +266,6 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
             dayToggles[i].setChecked(days[i]);
         }
 
-        // Real-time eligibility evaluation
         Runnable checkEligibility = () -> {
             int h = timePicker.getCurrentHour();
             int m = timePicker.getCurrentMinute();
@@ -288,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
             if (hasWeekday && !weekdayEligible) fullyEligible = false;
             if (hasWeekend && !weekendEligible) fullyEligible = false;
             if (!hasWeekday && !hasWeekend) {
-                // Today evaluation
                 fullyEligible = StreakManager.isTimeEligible(java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK), h, m);
             }
 
@@ -354,7 +346,7 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
             updateStreakUI();
             dialog.dismiss();
 
-            // Automatically show tutorial after setting an alarm!
+            // Automatically show tutorial after setting an alarm
             showTutorialDialog();
         });
 
@@ -376,10 +368,6 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         int currentStreak = StreakManager.getCurrentStreak(this);
 
         RoadmapAdapter adapter = new RoadmapAdapter(StreakTier.getAllTiers(), currentStreak, tier -> {
-            // Preview this tier on the widget!
-            StreakManager.setSimulatedStreak(this, tier.getMinDays() == 0 ? 1 : tier.getMinDays());
-            updateStreakUI();
-            Toast.makeText(this, "Примерен ранг: " + tier.getKzTitle() + " (" + tier.getRuTitle() + ")", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
         recyclerTiers.setAdapter(adapter);
@@ -387,20 +375,6 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         dialog.findViewById(R.id.btn_close_roadmap).setOnClickListener(v -> dialog.dismiss());
         dialog.findViewById(R.id.btn_dismiss_roadmap).setOnClickListener(v -> dialog.dismiss());
         dialog.show();
-    }
-
-    private void showSimulateStreakDialog() {
-        String[] options = {"1 день (Бастау)", "15 дней (Тұлпар)", "35 дней (Батыр)", "100 дней (Көкжал)", "180 дней (Отырар)", "365 дней (Мәңгілік Ел)"};
-        int[] dayValues = {1, 15, 35, 100, 180, 365};
-
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Тестирование 365 дней серии и дизайна виджета")
-                .setItems(options, (d, which) -> {
-                    StreakManager.setSimulatedStreak(this, dayValues[which]);
-                    updateStreakUI();
-                    Toast.makeText(this, "Установлена серия: " + dayValues[which] + " дней!", Toast.LENGTH_SHORT).show();
-                })
-                .show();
     }
 
     // ==================== AlarmsAdapter.OnAlarmListener ====================

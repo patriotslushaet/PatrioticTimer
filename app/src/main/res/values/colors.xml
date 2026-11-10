@@ -1,37 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Kazakhstan National Flag Colors -->
+    <!-- Kazakhstan Official National Flag Colors (Standard) -->
     <color name="kz_sky_blue">#00AFCA</color>
-    <color name="kz_sky_blue_dark">#008CA3</color>
-    <color name="kz_sky_blue_light">#33C5DB</color>
-    <color name="kz_gold">#FFCC00</color>
-    <color name="kz_gold_dark">#D69E00</color>
-    <color name="kz_gold_light">#FFE066</color>
-    <color name="kz_amber">#FFA500</color>
+    <color name="kz_sky_blue_dark">#00869C</color>
+    <color name="kz_sky_blue_light">#26C2DB</color>
+    <color name="kz_gold">#FEC50C</color>
+    <color name="kz_gold_dark">#D4A000</color>
+    <color name="kz_gold_light">#FFD54F</color>
 
     <!-- Deep Caspian Dark Theme Backgrounds -->
-    <color name="kz_navy_bg">#071A2C</color>
-    <color name="kz_navy_surface">#0D2845</color>
-    <color name="kz_navy_surface_elevated">#14375D</color>
-    <color name="kz_navy_card">#113254</color>
-    <color name="kz_navy_card_border">#1E4D7A</color>
+    <color name="kz_navy_bg">#061320</color>
+    <color name="kz_navy_surface">#0B2035</color>
+    <color name="kz_navy_surface_elevated">#102D49</color>
+    <color name="kz_navy_card">#0F273F</color>
+    <color name="kz_navy_card_border">#173754</color>
 
     <!-- Text & Accent Colors -->
     <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B2C9DF</color>
-    <color name="text_muted">#708DAE</color>
-    <color name="text_gold">#FFD54F</color>
+    <color name="text_secondary">#8EA9C1</color>
+    <color name="text_muted">#5F7B96</color>
+    <color name="text_gold">#FEC50C</color>
 
     <!-- Status Colors -->
     <color name="status_success">#2ECC71</color>
     <color name="status_warning">#F39C12</color>
     <color name="status_error">#E74C3C</color>
-    <color name="status_gold">#FFD700</color>
+    <color name="status_gold">#FEC50C</color>
 
     <!-- Overlay & Transparents -->
-    <color name="kz_overlay_dark">#CC071A2C</color>
-    <color name="kz_gold_transparent_20">#33FFCC00</color>
-    <color name="kz_gold_transparent_40">#66FFCC00</color>
+    <color name="kz_overlay_dark">#E6061320</color>
+    <color name="kz_gold_transparent_20">#33FEC50C</color>
+    <color name="kz_gold_transparent_40">#66FEC50C</color>
     <color name="kz_blue_transparent_20">#3300AFCA</color>
     <color name="kz_blue_transparent_40">#6600AFCA</color>
 </resources>

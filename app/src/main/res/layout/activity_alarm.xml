@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#071A2C">
+    android:background="#061320">
 
     <!-- Camera Preview -->
     <androidx.camera.view.PreviewView
@@ -19,7 +19,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#33071A2C"
+        android:background="#2E061320"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
         android:id="@+id/header_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#CC071A2C"
+        android:background="#E6061320"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
         android:paddingTop="36dp"
@@ -46,44 +46,36 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="38dp"
+                android:layout_height="24dp"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/ic_kazakh_eagle_sun" />
+                android:scaleType="fitCenter"
+                android:src="@drawable/flag_kz" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="12dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ҚАРА ТҰР! ӘНҰРАН ОЙНАЛУДА!"
-                    android:textColor="#FFCC00"
-                    android:textSize="12sp"
+                    android:text="ҚАЗАҚСТАН МЕМЛЕКЕТТІК ӘНҰРАНЫ"
+                    android:textColor="#FEC50C"
+                    android:textSize="11sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_anthem_timer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Гимн Казахстана (01:43)"
+                    android:text="«Менің Қазақстаным» (01:50)"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/btn_skip_test"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/skip_test_btn"
-                android:padding="6dp"
-                android:src="@drawable/ic_play_kazakh" />
         </LinearLayout>
 
         <!-- Anthem Progress Bar -->
@@ -91,12 +83,12 @@
             android:id="@+id/progress_anthem"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="6dp"
+            android:layout_height="5dp"
             android:layout_marginTop="10dp"
             android:max="100"
             android:progress="0"
-            android:progressBackgroundTint="#33B2C9DF"
-            android:progressTint="#FFCC00" />
+            android:progressBackgroundTint="#338EA9C1"
+            android:progressTint="#FEC50C" />
     </LinearLayout>
 
     <!-- Center Pose Guide & Silhouette Overlay -->
@@ -143,7 +135,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="14dp"
         android:background="@drawable/bg_btn_kazakh_blue"
         android:gravity="center"
         android:paddingHorizontal="16dp"
@@ -161,10 +153,10 @@
         android:id="@+id/bottom_panel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#E6071A2C"
+        android:background="#F2061320"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:paddingVertical="16dp"
+        android:paddingVertical="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -200,7 +192,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:text="Смирность"
-                        android:textColor="#B2C9DF"
+                        android:textColor="#8EA9C1"
                         android:textSize="11sp" />
                 </LinearLayout>
 
@@ -210,15 +202,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="98%"
-                    android:textColor="#FFCC00"
+                    android:textColor="#FEC50C"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="32dp"
-                android:background="#26B2C9DF" />
+                android:layout_height="30dp"
+                android:background="#268EA9C1" />
 
             <!-- Reaction Time Metric -->
             <LinearLayout
@@ -244,8 +236,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:text="Вставание в позу"
-                        android:textColor="#B2C9DF"
+                        android:text="Время стойки"
+                        android:textColor="#8EA9C1"
                         android:textSize="11sp" />
                 </LinearLayout>
 
@@ -254,8 +246,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="2.8 сек"
-                    android:textColor="#33C5DB"
+                    android:text="3.2 сек"
+                    android:textColor="#00AFCA"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>

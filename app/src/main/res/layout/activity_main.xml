@@ -16,7 +16,7 @@
             android:orientation="vertical"
             android:paddingBottom="96dp">
 
-            <!-- Top Header Bar -->
+            <!-- Top Header Bar with Real Kazakhstan Flag -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -27,43 +27,51 @@
                 android:paddingTop="36dp"
                 android:paddingBottom="16dp">
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_kazakh_eagle_sun" />
+                <FrameLayout
+                    android:layout_width="44dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bg_card_caspian"
+                    android:padding="2dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/app_name"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/flag_kz" />
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="14dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ҚАЗАҚСТАН ПАТРИОТЫ"
-                        android:textColor="#FFCC00"
-                        android:textSize="11sp"
+                        android:text="ҚАЗАҚСТАН РЕСПУБЛИКАСЫ"
+                        android:textColor="#FEC50C"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/app_name"
+                        android:text="Патриотический Будильник"
                         android:textColor="#FFFFFF"
-                        android:textSize="18sp"
+                        android:textSize="17sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <ImageView
                     android:id="@+id/btn_tutorial"
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Инструкция"
-                    android:padding="7dp"
+                    android:padding="6dp"
                     android:src="@drawable/ic_info_circle" />
             </LinearLayout>
 
@@ -75,8 +83,8 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/kz_navy_card"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -90,20 +98,14 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:contentDescription="@string/streak_label"
-                            android:src="@drawable/ic_streak_flame" />
-
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:text="@string/streak_label"
-                            android:textColor="#B2C9DF"
-                            android:textSize="13sp" />
+                            android:text="ПАТРИОТИЧЕСКАЯ СЕРИЯ"
+                            android:textColor="#8EA9C1"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_streak_misses"
@@ -111,7 +113,7 @@
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_pill_eligible"
                             android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
+                            android:paddingVertical="3dp"
                             android:text="2 из 2 запас"
                             android:textColor="#2ECC71"
                             android:textSize="11sp"
@@ -121,7 +123,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="8dp"
                         android:gravity="bottom"
                         android:orientation="horizontal">
 
@@ -131,17 +133,17 @@
                             android:layout_height="wrap_content"
                             android:text="15"
                             android:textColor="#FFFFFF"
-                            android:textSize="48sp"
+                            android:textSize="44sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:layout_marginBottom="10dp"
+                            android:layout_marginBottom="8dp"
                             android:text="дней подряд"
-                            android:textColor="#33C5DB"
-                            android:textSize="18sp"
+                            android:textColor="#00AFCA"
+                            android:textSize="17sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -150,15 +152,15 @@
                         android:id="@+id/layout_tier_badge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:background="@drawable/bg_card_caspian"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:padding="10dp">
+                        android:padding="12dp">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:contentDescription="Tier"
                             android:src="@drawable/ic_shield_kazakh" />
 
@@ -174,7 +176,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Ранг: Тұлпар (Степной Тулпар)"
-                                android:textColor="#FFCC00"
+                                android:textColor="#FEC50C"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
 
@@ -182,8 +184,9 @@
                                 android:id="@+id/tv_tier_desc"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Дизайн виджета улучшен! Следующий ранг через 5 дней."
-                                android:textColor="#B2C9DF"
+                                android:layout_marginTop="1dp"
+                                android:text="Дизайн виджета улучшен • До след. ранга: 5 дней"
+                                android:textColor="#8EA9C1"
                                 android:textSize="11sp" />
                         </LinearLayout>
                     </LinearLayout>
@@ -193,9 +196,9 @@
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Шкала 365 дней серии и рангов →"
-                        android:textColor="#33C5DB"
+                        android:layout_marginTop="4dp"
+                        android:text="Шкала 365 дней серии →"
+                        android:textColor="#00AFCA"
                         android:textSize="12sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -206,9 +209,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#102C48"
+                app:cardBackgroundColor="@color/kz_navy_card"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="2dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -223,8 +226,8 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
                             android:contentDescription="Rules"
                             android:src="@drawable/ic_calendar_streak" />
 
@@ -232,9 +235,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="@string/streak_rule_title"
-                            android:textColor="#FFCC00"
-                            android:textSize="12sp"
+                            android:text="ПРАВИЛО ПАТРИОТИЧЕСКОЙ СЕРИИ"
+                            android:textColor="#FEC50C"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -243,7 +246,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:lineSpacingExtra="3dp"
-                        android:text="@string/streak_rule_text"
+                        android:text="• Будни (Пн-Пт): с 00:00 до 10:00\n• Выходные (Сб-Вс): с 00:00 до 12:00\nБудильники позже этого времени не засчитываются в серию (слишком поздно). В месяц разрешено 2 пропуска без потери серии."
                         android:textColor="#D1E2F2"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -259,29 +262,17 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:contentDescription="Widget"
                     android:src="@drawable/ic_widget_preview" />
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="Виджет на главный экран (Казахстан)"
-                    android:textColor="#B2C9DF"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/btn_simulate_streak"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="4dp"
-                    android:text="Тест рангов"
-                    android:textColor="#33C5DB"
+                    android:layout_marginStart="8dp"
+                    android:text="ВИДЖЕТ ДЛЯ РАБОЧЕГО СТОЛА"
+                    android:textColor="#8EA9C1"
                     android:textSize="11sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -308,9 +299,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Мои Будильники"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
+                    android:text="МОИ БУДИЛЬНИКИ"
+                    android:textColor="#8EA9C1"
+                    android:textSize="11sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -321,7 +312,7 @@
                     android:paddingHorizontal="14dp"
                     android:paddingVertical="7dp"
                     android:text="+ Поставить"
-                    android:textColor="#071A2C"
+                    android:textColor="#061320"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -333,55 +324,6 @@
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false" />
 
-            <!-- Instant Test Alarm Button -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/btn_test_alarm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#0B3C68"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="3dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:contentDescription="@string/test_alarm"
-                        android:src="@drawable/ic_play_kazakh" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/test_alarm"
-                            android:textColor="#FFCC00"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Проверить считывание позы, гимн и видео Токаева"
-                            android:textColor="#B2C9DF"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -394,9 +336,9 @@
         android:layout_marginBottom="24dp"
         android:backgroundTint="@color/kz_gold"
         android:text="@string/add_alarm"
-        android:textColor="#071A2C"
+        android:textColor="#061320"
         android:textSize="14sp"
         android:textStyle="bold"
         app:icon="@drawable/ic_alarm_add"
-        app:iconTint="#071A2C" />
+        app:iconTint="#061320" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
