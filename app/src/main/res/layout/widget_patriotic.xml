@@ -1,145 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_widget_patriotic"
-    android:orientation="vertical"
-    android:paddingLeft="12dp"
-    android:paddingTop="10dp"
-    android:paddingRight="12dp"
-    android:paddingBottom="10dp">
+    android:layout_height="match_parent">
 
-    <!-- Header: Real Kazakhstan Flag + Titles -->
-    <LinearLayout
+    <ImageView
+        android:id="@+id/widget_flag"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:contentDescription="Patriotic Timer Widget"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_widget_horizontal" />
 
-        <ImageView
-            android:id="@+id/widget_flag"
-            android:layout_width="28dp"
-            android:layout_height="18dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="fitCenter"
-            android:src="@drawable/flag_kz" />
+    <TextView
+        android:id="@+id/btn_widget_refresh"
+        android:layout_width="90dp"
+        android:layout_height="36dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="12dp"
+        android:background="#00000000" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ҚАЗАҚСТАН ПАТРИОТЫ"
-                android:textColor="#FEC50C"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/widget_tier_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ранг: Бастау"
-                android:textColor="#00AFCA"
-                android:textSize="10sp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/widget_misses"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_pill_eligible"
-            android:paddingLeft="6dp"
-            android:paddingTop="2dp"
-            android:paddingRight="6dp"
-            android:paddingBottom="2dp"
-            android:text="2/2 запас"
-            android:textColor="#2ECC71"
-            android:textSize="9sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
-        android:background="#26FEC50C" />
-
-    <!-- Center: Streak counter -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/widget_streak_icon"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:contentDescription="@string/streak_label"
-            android:src="@drawable/ic_streak_flame" />
+    <RelativeLayout
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="28dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/widget_streak_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="15 ДНЕЙ"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="2"
+                android:shadowRadius="4"
+                android:text="15"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/widget_tier_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Серия не прерывается"
-                android:textColor="#8EA9C1"
-                android:textSize="10sp" />
+                android:text="КҮН"
+                android:textColor="#FEC50C"
+                android:textSize="11sp"
+                android:textStyle="bold" />
         </LinearLayout>
-    </LinearLayout>
-
-    <!-- Footer: Next Alarm and Eligibility -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:contentDescription="Next alarm"
-            android:src="@drawable/ic_alarm_clock" />
-
-        <TextView
-            android:id="@+id/widget_next_alarm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_weight="1"
-            android:text="Будильник: 06:45"
-            android:textColor="#FEC50C"
-            android:textSize="10sp" />
-
-        <TextView
-            android:id="@+id/widget_status_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="В серии ✓"
-            android:textColor="#2ECC71"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-</LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

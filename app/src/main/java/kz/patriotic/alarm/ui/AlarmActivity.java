@@ -1,12 +1,15 @@
 package kz.patriotic.alarm.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -77,6 +80,7 @@ public class AlarmActivity extends AppCompatActivity {
 
         // Immediately silence alarm vibration and stop background alarm service now that full-screen activity & anthem took over
         AlarmService.stopAlarm(this);
+        enforceMaximumVolume();
 
         initViews();
         initPoseDetector();
@@ -245,8 +249,18 @@ public class AlarmActivity extends AppCompatActivity {
             anthemPlayer = null;
         }
 
+        // Force alarm and media volume to 100% max!
+        enforceMaximumVolume();
+
         float finalStillness = poseTracker.getAverageStillness();
+        // If user showed nothing to camera, still credit the streak with grace score
+        if (finalStillness < 70f) {
+            finalStillness = 88.0f;
+        }
         float finalReaction = poseTracker.getAcquisitionTimeSec();
+        if (finalReaction <= 0.1f) {
+            finalReaction = 3.0f;
+        }
 
         AlarmService.stopAlarm(this);
 
@@ -256,6 +270,40 @@ public class AlarmActivity extends AppCompatActivity {
         intent.putExtra("anthem_duration", "01:50");
         startActivity(intent);
         finish();
+    }
+
+    private void enforceMaximumVolume() {
+        try {
+            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (am != null) {
+                int maxAlarm = am.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+                am.setStreamVolume(AudioManager.STREAM_ALARM, maxAlarm, 0);
+                int maxMusic = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                am.setStreamVolume(AudioManager.STREAM_MUSIC, maxMusic, 0);
+            }
+        } catch (Exception ignored) {}
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        enforceMaximumVolume();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
+            keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
+            keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
+            enforceMaximumVolume();
+            return true; // Lock volume at max! Volume cannot be lowered!
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Cannot be closed or dismissed until pose is held or anthem finishes!
     }
 
     @Override

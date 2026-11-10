@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog_kazakh"
+        android:orientation="vertical"
+        android:padding="22dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Құқықтық келісімдер • Соглашения"
+                android:textColor="#FEC50C"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btn_close_legal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="6dp"
+                android:text="✕"
+                android:textColor="#8DB4D6"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Terms of Service -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="1. ҚОЛДАНУШЫ КЕЛІСІМІ (TERMS OF SERVICE)"
+            android:textColor="#33C5DB"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="2dp"
+            android:text="• Мақсаты: Бұл қолданба азаматтық рухты, патриотизмді және таңғы тәртіпті көтеруге арналған тәуелсіз ұлттық бағдарлама.\n• Жауапкершіліктен босату: Әзірлеуші смартфон қуатының таусылуы, құрылғының өшірілуі немесе жүйелік шектеулер салдарынан оятардың шықпай қалуына, сондай-ақ жұмысқа, рейске, сабаққа кешігу салдарларына заңды немесе материалдық жауапкершілік көтермейді.\n• Мемлекеттік рәміздер: ҚР Туы мен Әнұраны «Қазақстан Республикасының мемлекеттік рәміздері туралы» 2007 жылғы 4 маусымдағы № 258-III ҚР Конституциялық Заңына толық сәйкестікте, құрметпен және асқақ мақсатта қолданылады."
+            android:textColor="#D3E3F2"
+            android:textSize="11sp" />
+
+        <!-- Privacy Policy -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="2. ҚҰПИЯЛЫЛЫҚ САЯСАТЫ (PRIVACY POLICY)"
+            android:textColor="#33C5DB"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="2dp"
+            android:text="• Камера және бейне: Қолданбаның камераны пайдалануы тек адамның оң қолын жүрегіне қойып, тік тұруын (сап түзеуін) жергілікті түрде Google ML Kit нейрожелісі арқылы тікелей құрылғының жедел жадында тану үшін ғана қолданылады.\n• Ешбір бейне, фото немесе биометриялық ақпарат ешқашан жазылмайды, телефон жадында сақталмайды және интернет арқылы ешқандай үшінші тарапқа жіберілмейді (100% On-Device Privacy).\n• Жеке мәліметтер: Біз пайдаланушының есімін, телефон нөмірін, геопозициясын немесе байланыс кітапшасын жинамаймыз."
+            android:textColor="#D3E3F2"
+            android:textSize="11sp" />
+
+        <!-- Purchases & Support -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="3. ТӨЛЕМДЕР ЖӘНЕ ДЕЗАКТИВАЦИЯ (PURCHASES)"
+            android:textColor="#33C5DB"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="2dp"
+            android:text="• Рекламаны өшіру (2 000 ₸) бір реттік төлем болып табылады және құрылғыға мәңгіге бекітіледі.\n• Әзірлеушіні ерікті қолдау төлемдері (100 ₸ — 10 000 ₸) қазақстандық сапалы цифрлық шешімдерді дамытуға бағытталған ерікті көмек болып табылады."
+            android:textColor="#D3E3F2"
+            android:textSize="11sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_accept_legal"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/kz_gold"
+            android:text="Келісемін (Принимаю)"
+            android:textColor="#061320"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp" />
+    </LinearLayout>
+</ScrollView>

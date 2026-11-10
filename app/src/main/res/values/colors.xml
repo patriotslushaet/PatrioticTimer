@@ -33,4 +33,11 @@
     <color name="kz_gold_transparent_40">#66FEC50C</color>
     <color name="kz_blue_transparent_20">#3300AFCA</color>
     <color name="kz_blue_transparent_40">#6600AFCA</color>
+
+    <!-- OneUI / Material Modern Dark Colors matching image.png -->
+    <color name="dark_canvas_bg">#121212</color>
+    <color name="dark_card_bg">#1C1C1E</color>
+    <color name="dark_card_elevated">#252528</color>
+    <color name="dark_bottom_bar">#161618</color>
+    <color name="dark_tab_unselected">#8E8E93</color>
 </resources>

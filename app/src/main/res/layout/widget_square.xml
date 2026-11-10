@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_square_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- High-res authentic background from image_4.png -->
+    <ImageView
+        android:id="@+id/widget_square_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Patriotic Timer Square Widget"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_widget_square" />
+
+    <!-- Center circular streak display -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_widget_sq_streak_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="6"
+            android:text="15"
+            android:textColor="#FEC50C"
+            android:textSize="38sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_widget_sq_streak_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="КҮН СЕРИЯСЫ"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</RelativeLayout>

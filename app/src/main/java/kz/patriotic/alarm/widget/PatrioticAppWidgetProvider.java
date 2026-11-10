@@ -6,21 +6,16 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import java.util.List;
-
 import kz.patriotic.alarm.R;
-import kz.patriotic.alarm.model.AlarmItem;
-import kz.patriotic.alarm.model.StreakTier;
 import kz.patriotic.alarm.ui.MainActivity;
-import kz.patriotic.alarm.util.AlarmStorage;
 import kz.patriotic.alarm.util.StreakManager;
 
 public class PatrioticAppWidgetProvider extends AppWidgetProvider {
-    private static final String TAG = "PatrioticWidget";
+    private static final String TAG = "PatrioticWidgetHorizontal";
+    public static final String ACTION_REFRESH_WIDGET = "kz.patriotic.alarm.ACTION_REFRESH_WIDGET";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -44,53 +39,41 @@ public class PatrioticAppWidgetProvider extends AppWidgetProvider {
             try {
                 updateAppWidget(context, appWidgetManager, appWidgetId);
             } catch (Exception e) {
-                Log.e(TAG, "Failed updating widget id " + appWidgetId + ": " + e.getMessage());
+                Log.e(TAG, "Failed updating horizontal widget id " + appWidgetId + ": " + e.getMessage());
             }
         }
     }
 
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         int streak = StreakManager.getCurrentStreak(context);
-        StreakTier tier = StreakTier.getTierForDays(streak);
-        int missesRemaining = StreakManager.getMonthlyMissesRemaining(context);
 
-        List<AlarmItem> alarms = AlarmStorage.getAlarms(context);
-        String nextAlarmText = "Будильник не установлен";
-        boolean isEligible = false;
-        for (AlarmItem a : alarms) {
-            if (a.isEnabled()) {
-                nextAlarmText = "Будильник: " + a.getFormattedTime();
-                isEligible = a.hasEligibleDays();
-                break;
-            }
-        }
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_horizontal);
 
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_patriotic);
+        // Streak number inside the authentic golden circle of image_3.png
+        views.setTextViewText(R.id.tv_widget_streak_num, String.valueOf(streak));
+        views.setTextViewText(R.id.tv_widget_streak_unit, "КҮН");
 
-        // Ensure real flag PNG is set
-        views.setImageViewResource(R.id.widget_flag, R.drawable.flag_kz);
+        // Refresh action
+        Intent refreshIntent = new Intent(context, PatrioticAppWidgetProvider.class);
+        refreshIntent.setAction(ACTION_REFRESH_WIDGET);
+        PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
+                context,
+                appWidgetId + 5000,
+                refreshIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        views.setOnClickPendingIntent(R.id.btn_widget_refresh, refreshPendingIntent);
 
-        // Texts
-        views.setTextViewText(R.id.widget_streak_count, streak + " ДНЕЙ");
-        views.setTextViewText(R.id.widget_tier_title, "Ранг: " + tier.getKzTitle() + " (" + tier.getRuTitle() + ")");
-        try {
-            views.setTextColor(R.id.widget_tier_title, Color.parseColor(tier.getAccentColorHex()));
-        } catch (Exception ignored) {}
-
-        views.setTextViewText(R.id.widget_misses, missesRemaining + "/2 запас");
-        views.setTextViewText(R.id.widget_next_alarm, nextAlarmText);
-        views.setTextViewText(R.id.widget_status_badge, isEligible ? "В серии ✓" : "Обычный");
-
-        // Click on widget opens MainActivity
+        // Click on widget root opens MainActivity
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
-                0,
+                appWidgetId,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
-        views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_horizontal_root, pendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }

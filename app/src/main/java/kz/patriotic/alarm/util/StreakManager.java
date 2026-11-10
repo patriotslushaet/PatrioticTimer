@@ -168,12 +168,23 @@ public class StreakManager {
     public static void updateWidgets(Context context) {
         try {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            ComponentName thisWidget = new ComponentName(context, PatrioticAppWidgetProvider.class);
-            int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-            if (allWidgetIds != null && allWidgetIds.length > 0) {
+            // 1. Horizontal widget (image_3)
+            ComponentName horizWidget = new ComponentName(context, PatrioticAppWidgetProvider.class);
+            int[] horizIds = appWidgetManager.getAppWidgetIds(horizWidget);
+            if (horizIds != null && horizIds.length > 0) {
                 Intent intent = new Intent(context, PatrioticAppWidgetProvider.class);
                 intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, allWidgetIds);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, horizIds);
+                context.sendBroadcast(intent);
+            }
+
+            // 2. Square widget (image_4)
+            ComponentName sqWidget = new ComponentName(context, kz.patriotic.alarm.widget.PatrioticWidgetSquareProvider.class);
+            int[] sqIds = appWidgetManager.getAppWidgetIds(sqWidget);
+            if (sqIds != null && sqIds.length > 0) {
+                Intent intent = new Intent(context, kz.patriotic.alarm.widget.PatrioticWidgetSquareProvider.class);
+                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, sqIds);
                 context.sendBroadcast(intent);
             }
         } catch (Exception ignored) {}

@@ -25,6 +25,7 @@ import java.util.Locale;
 import kz.patriotic.alarm.R;
 import kz.patriotic.alarm.model.StreakTier;
 import kz.patriotic.alarm.service.AlarmService;
+import kz.patriotic.alarm.util.AdManager;
 import kz.patriotic.alarm.util.PatrioticMusicManager;
 import kz.patriotic.alarm.util.StreakManager;
 
@@ -72,7 +73,7 @@ public class CompletedActivity extends AppCompatActivity {
         // Run animations!
         startCelebrationAnimations(targetStillness, targetReaction, currentStreak);
 
-        btnReturnMain.setOnClickListener(v -> returnToMain());
+        btnReturnMain.setOnClickListener(v -> AdManager.showInterstitialAd(this, this::returnToMain));
     }
 
     private void initViews() {

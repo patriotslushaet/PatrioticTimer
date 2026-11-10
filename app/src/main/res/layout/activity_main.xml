@@ -3,342 +3,1047 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/kz_navy_bg">
+    android:background="@color/dark_canvas_bg">
 
-    <androidx.core.widget.NestedScrollView
+    <!-- Main Content Container with Top Header and Dynamic Tabs -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:orientation="vertical">
 
+        <!-- Top Header Bar (OneUI Dark Theme) -->
         <LinearLayout
+            android:id="@+id/layout_top_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="96dp">
+            android:background="@color/dark_canvas_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="36dp"
+            android:paddingBottom="12dp">
 
-            <!-- Top Header Bar with Real Kazakhstan Flag -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/kz_navy_surface"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="20dp"
-                android:paddingTop="36dp"
-                android:paddingBottom="16dp">
-
-                <FrameLayout
-                    android:layout_width="44dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/bg_card_caspian"
-                    android:padding="2dp">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/app_name"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/flag_kz" />
-                </FrameLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ҚАЗАҚСТАН РЕСПУБЛИКАСЫ"
-                        android:textColor="#FEC50C"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Патриотический Будильник"
-                        android:textColor="#FFFFFF"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+            <FrameLayout
+                android:layout_width="38dp"
+                android:layout_height="26dp"
+                android:background="@drawable/bg_alarm_card_dark"
+                android:padding="2dp">
 
                 <ImageView
-                    android:id="@+id/btn_tutorial"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Инструкция"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_info_circle" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/flag_kz" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_top_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ҚАЗАҚСТАН ПАТРИОТЫ"
+                    android:textColor="#FEC50C"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_top_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Оятарлар"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Streak Hero Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_streak"
+            <!-- Quick Add Alarm button in header -->
+            <ImageView
+                android:id="@+id/btn_top_add"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Add Alarm"
+                android:padding="7dp"
+                android:src="@drawable/ic_alarm_add"
+                app:tint="#FEC50C" />
+
+            <!-- Overflow 3-dot Menu -->
+            <ImageView
+                android:id="@+id/btn_overflow_menu"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Menu"
+                android:padding="7dp"
+                android:src="@drawable/ic_more_vert"
+                app:tint="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- Content Frame for 4 Tabs -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- ==================== TAB 1: ALARMS ==================== -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/tab_alarms_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="@color/kz_navy_card"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="18dp">
+                    android:paddingBottom="96dp">
 
+                    <!-- Mini Streak Banner (Clickable -> Opens Tab 2) -->
                     <LinearLayout
+                        android:id="@+id/banner_streak_mini"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="ПАТРИОТИЧЕСКАЯ СЕРИЯ"
-                            android:textColor="#8EA9C1"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_streak_misses"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_pill_eligible"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="3dp"
-                            android:text="2 из 2 запас"
-                            android:textColor="#2ECC71"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="8dp"
-                        android:gravity="bottom"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_streak_number"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="15"
-                            android:textColor="#FFFFFF"
-                            android:textSize="44sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:text="дней подряд"
-                            android:textColor="#00AFCA"
-                            android:textSize="17sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <!-- Tier Rank Badge -->
-                    <LinearLayout
-                        android:id="@+id/layout_tier_badge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/bg_card_caspian"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:padding="12dp">
+                        android:padding="16dp">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:contentDescription="Tier"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:contentDescription="Streak"
                             android:src="@drawable/ic_shield_kazakh" />
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tv_tier_name"
+                                android:id="@+id/tv_streak_banner_title"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Ранг: Тұлпар (Степной Тулпар)"
-                                android:textColor="#FEC50C"
-                                android:textSize="13sp"
+                                android:text="Патриоттық серия: 15 күн"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tv_tier_desc"
+                                android:id="@+id/tv_streak_banner_desc"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="Дизайн виджета улучшен • До след. ранга: 5 дней"
+                                android:layout_marginTop="2dp"
+                                android:text="Тұлпар дәрежесі • Толық шкаланы көру →"
                                 android:textColor="#8EA9C1"
                                 android:textSize="11sp" />
                         </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_streak_banner_badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_pill_eligible"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp"
+                            android:text="2/2 запас"
+                            android:textColor="#2ECC71"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_view_roadmap"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                    <!-- Streak Rule Notice Card -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Шкала 365 дней серии →"
-                        android:textColor="#00AFCA"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="14dp">
 
-            <!-- Streak Rule Banner Card -->
-            <androidx.cardview.widget.CardView
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="Rules"
+                                android:src="@drawable/ic_calendar_streak" />
+
+                            <TextView
+                                android:id="@+id/tv_rule_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="СЕРИЯ ЕРЕЖЕСІ (ПРАВИЛО СЕРИИ)"
+                                android:textColor="#FEC50C"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_rule_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="• Жұмыс күндері (Пн-Пт): 00:00 - 10:00\n• Демалыс күндері (Сб-Вс): 00:00 - 12:00\nОсы уақыттар ғана серияны қолдайды. Ай сайын 2 рет өткізіп алуға рұқсат."
+                            android:textColor="#A0B8D0"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <!-- Section Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="6dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_section_my_alarms"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="МЕНІҢ ОЯТАРЛАРЫМ"
+                            android:textColor="#8EA9C1"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/btn_add_alarm_header"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_btn_kazakh_gold"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="5dp"
+                            android:text="+ Қосу"
+                            android:textColor="#061320"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Alarms RecyclerView matching image.png -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_alarms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false" />
+
+                    <!-- Empty state view -->
+                    <LinearLayout
+                        android:id="@+id/layout_empty_alarms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="32dp"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:alpha="0.4"
+                            android:contentDescription="Empty"
+                            android:src="@drawable/ic_alarm_clock" />
+
+                        <TextView
+                            android:id="@+id/tv_empty_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:gravity="center"
+                            android:text="Әзірге оятар жоқ.\nАлғашқы оятарыңызды орнатыңыз!"
+                            android:textColor="#8EA9C1"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <!-- ==================== TAB 2: STREAK 365 ==================== -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/tab_streak_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="12dp"
-                app:cardBackgroundColor="@color/kz_navy_card"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp">
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="14dp">
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="96dp">
 
+                    <!-- Hero Streak Card -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:contentDescription="Rules"
-                            android:src="@drawable/ic_calendar_streak" />
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
                         <TextView
+                            android:id="@+id/tv_streak_hero_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="ПРАВИЛО ПАТРИОТИЧЕСКОЙ СЕРИИ"
-                            android:textColor="#FEC50C"
+                            android:text="ПАТРИОТТЫҚ 365 КҮН СЕРИЯСЫ"
+                            android:textColor="#8EA9C1"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:gravity="bottom"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tv_streak_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="15"
+                                android:textColor="#FFFFFF"
+                                android:textSize="48sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_streak_unit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:text="күн қатарынан"
+                                android:textColor="#00AFCA"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Tier Badge -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/bg_card_caspian"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:padding="12dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="Tier"
+                                android:src="@drawable/ic_shield_kazakh" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_tier_name"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ранг: Тұлпар (Степной Тулпар)"
+                                    android:textColor="#FEC50C"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_tier_desc"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="Келесі дәрежеге дейін: 5 күн"
+                                    android:textColor="#8EA9C1"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_streak_misses"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/bg_pill_eligible"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"
+                            android:text="Айына 2 өткізіп алу запасы бар"
+                            android:textColor="#2ECC71"
                             android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tv_roadmap_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="365 КҮН ШКАЛАСЫ ЖӘНЕ ДӘРЕЖЕЛЕР"
+                        android:textColor="#8EA9C1"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <!-- Full 365 Days Roadmap Recycler -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_roadmap_inline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:lineSpacingExtra="3dp"
-                        android:text="• Будни (Пн-Пт): с 00:00 до 10:00\n• Выходные (Сб-Вс): с 00:00 до 12:00\nБудильники позже этого времени не засчитываются в серию (слишком поздно). В месяц разрешено 2 пропуска без потери серии."
-                        android:textColor="#D1E2F2"
-                        android:textSize="11sp" />
+                        android:nestedScrollingEnabled="false" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </androidx.core.widget.NestedScrollView>
 
-            <!-- Home Screen Widget Showcase -->
-            <LinearLayout
+            <!-- ==================== TAB 3: WIDGETS ==================== -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/tab_widgets_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="96dp">
+
+                    <TextView
+                        android:id="@+id/tv_widgets_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="РЕСМИ ҚАЗАҚСТАН ВИДЖЕТТЕРІ (0 ҚАТЕ)"
+                        android:textColor="#FEC50C"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <!-- Widget 1: Horizontal 4x2 Reference from image_3.png -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_w1_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1. Горизонтальді виджет 4x2 (КҮН СЕРИЯСЫ)"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_w1_desc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Бәйтерек, Қазақстан туы және жаңарту батырмасы"
+                            android:textColor="#8EA9C1"
+                            android:textSize="11sp" />
+
+                        <!-- Horizontal 4x2 In-App Live Preview -->
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="170dp"
+                            android:layout_marginTop="12dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:contentDescription="Widget 4x2"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/bg_widget_horizontal" />
+
+                            <TextView
+                                android:id="@+id/preview_w1_streak"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="4dp"
+                                android:text="15"
+                                android:textColor="#004F6E"
+                                android:textSize="32sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <!-- Widget 2: Square 2x2 Reference from image_4.png -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_w2_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2. Шаршы виджет 2x2 (БІР ЕЛ — БІР ХАЛЫҚ!)"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_w2_desc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Алтын оюлы жиектеме, Қыран мен Күн сақинасы"
+                            android:textColor="#8EA9C1"
+                            android:textSize="11sp" />
+
+                        <!-- Square 2x2 In-App Live Preview -->
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp"
+                            android:layout_marginTop="12dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:contentDescription="Widget 2x2"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/bg_widget_square" />
+
+                            <TextView
+                                android:id="@+id/preview_w2_streak"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="10dp"
+                                android:text="15"
+                                android:textColor="#FEC50C"
+                                android:textSize="34sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <!-- Force Refresh Widgets Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_force_refresh_widgets"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="14dp"
+                        android:backgroundTint="@color/kz_sky_blue"
+                        android:text="Виджеттерді мәжбүрлі жаңарту ↺"
+                        android:textColor="#061320"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="14dp" />
+
+                    <!-- How to add instructions -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_widget_guide_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ЖҰМЫС ҮСТЕЛІНЕ ҚАЛАЙ ҚОСУ КЕРЕК?"
+                            android:textColor="#FEC50C"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_widget_guide_steps"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:lineSpacingExtra="3dp"
+                            android:text="1. Экранның бос жерін ұзақ басып тұрыңыз\n2. Ашылған мәзірден «Виджеттер» (Widgets) таңдаңыз\n3. «Патриотический Будильник» тауып, 4x2 немесе 2x2 виджетін жұмыс үстеліне сүйреңіз!\n✓ Android жүйесінің барлық нұсқаларында 0 қатемен жұмыс істейді."
+                            android:textColor="#D1E2F2"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <!-- ==================== TAB 4: SETTINGS ==================== -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/tab_settings_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="96dp">
+
+                    <!-- Language Switcher Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_setting_lang_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ТІЛДІ ТАҢДАУ / ВЫБОР ЯЗЫКА"
+                            android:textColor="#FEC50C"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/btn_lang_kz"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="6dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_btn_kazakh_blue"
+                                android:gravity="center"
+                                android:text="Қазақша 🇰🇿"
+                                android:textColor="#061320"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/btn_lang_ru"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="6dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_day_unselected"
+                                android:gravity="center"
+                                android:text="Русский"
+                                android:textColor="#8DB4D6"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- 100-Day Language Immersion Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_immersion_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="100 күндік қазақ тілін үйрену"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_immersion_desc"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="Орыс тілінен 100 күнде қазақшаға біртіндеп көшу"
+                                    android:textColor="#8EA9C1"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switch_immersion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                app:thumbTint="@color/kz_gold"
+                                app:trackTint="@color/kz_sky_blue" />
+                        </LinearLayout>
+
+                        <ProgressBar
+                            android:id="@+id/progress_learning_bar"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:layout_marginTop="12dp"
+                            android:max="100"
+                            android:progress="15"
+                            android:progressTint="@color/kz_gold" />
+
+                        <TextView
+                            android:id="@+id/tv_learning_progress_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="Прогресс: 15 / 100 сөз қазақшаға ауыстырылды"
+                            android:textColor="#00AFCA"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <!-- Ad Removal (2,000 KZT) Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_ad_removal_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ЖАРНАМАНЫ ӨШІРУ (2 000 ₸ МӘҢГІГЕ)"
+                            android:textColor="#FEC50C"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_ad_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Статус: Жарнама қосулы (Реклама включена)"
+                            android:textColor="#8EA9C1"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_settings_remove_ads"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="10dp"
+                            android:backgroundTint="@color/kz_gold"
+                            android:text="Жарнаманы өшіру — 2 000 ₸"
+                            android:textColor="#061320"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="12dp" />
+                    </LinearLayout>
+
+                    <!-- Support Developer Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_support_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ӘЗІРЛЕУШІНІ ҚОЛДАУ (DONATION)"
+                            android:textColor="#FEC50C"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_support_desc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="100 ₸-ден 10 000 ₸-ге дейін қазақша патриоттық жобаны қолдаңыз!"
+                            android:textColor="#8EA9C1"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_settings_donate"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="10dp"
+                            android:backgroundTint="@color/kz_sky_blue"
+                            android:text="Жобаны қолдау (100₸ – 10 000₸) 🇰🇿"
+                            android:textColor="#061320"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="12dp" />
+                    </LinearLayout>
+
+                    <!-- Legal Agreements Card (Google Play Ready) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_legal_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ҚҰҚЫҚТЫҚ КЕЛІСІМДЕР ЖӘНЕ ҚҰПИЯЛЫЛЫҚ"
+                            android:textColor="#FEC50C"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_legal_desc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Google Play талаптарына толық сәйкестік: ML Kit бейнекамераны тек құрылғыда өңдейді, ешқандай дерек сыртқа жіберілмейді немесе сақталмайды."
+                            android:textColor="#8EA9C1"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_settings_legal"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="10dp"
+                            android:text="Келісімді толық оқу (Terms &amp; Privacy)"
+                            android:textColor="#00AFCA"
+                            android:textSize="12sp"
+                            app:cornerRadius="12dp"
+                            app:strokeColor="#00AFCA" />
+                    </LinearLayout>
+
+                    <!-- Tutorial Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_alarm_card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_tutorial_setting_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ҚОЛДАНУ НҰСҚАУЛЫҒЫ (ТУТОРИАЛ)"
+                            android:textColor="#FEC50C"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_tutorial_setting_desc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Оятар қалай жұмыс істейді? Қолды жүрекке қою және Тоқаевтың бейнеролигі туралы."
+                            android:textColor="#8EA9C1"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_settings_tutorial"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="10dp"
+                            android:text="Нұсқаулықты қайта көру"
+                            android:textColor="#FEC50C"
+                            android:textSize="12sp"
+                            app:cornerRadius="12dp"
+                            app:strokeColor="#FEC50C" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+        </FrameLayout>
+
+        <!-- Modern 4-Tab Bottom Navigation Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_bottom_nav"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Tab 1: Alarms -->
+            <LinearLayout
+                android:id="@+id/nav_tab_alarms"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:contentDescription="Widget"
-                    android:src="@drawable/ic_widget_preview" />
+                    android:id="@+id/iv_nav_alarms"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="Alarms"
+                    android:src="@drawable/ic_alarm_clock"
+                    app:tint="#FEC50C" />
 
                 <TextView
+                    android:id="@+id/tv_nav_alarms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="ВИДЖЕТ ДЛЯ РАБОЧЕГО СТОЛА"
-                    android:textColor="#8EA9C1"
-                    android:textSize="11sp"
+                    android:layout_marginTop="4dp"
+                    android:text="Оятарлар"
+                    android:textColor="#FEC50C"
+                    android:textSize="10sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- In-App Interactive Widget Preview Card -->
-            <include
-                android:id="@+id/preview_widget"
-                layout="@layout/widget_patriotic"
-                android:layout_width="match_parent"
-                android:layout_height="116dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp" />
-
-            <!-- Alarms List Header -->
+            <!-- Tab 2: Streak 365 -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="20dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:id="@+id/nav_tab_streak"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_nav_streak"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="Streak"
+                    android:src="@drawable/ic_shield_kazakh"
+                    app:tint="#8E8E93" />
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="МОИ БУДИЛЬНИКИ"
-                    android:textColor="#8EA9C1"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/btn_add_alarm_header"
+                    android:id="@+id/tv_nav_streak"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_btn_kazakh_gold"
-                    android:paddingHorizontal="14dp"
-                    android:paddingVertical="7dp"
-                    android:text="+ Поставить"
-                    android:textColor="#061320"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="4dp"
+                    android:text="Серия 365"
+                    android:textColor="#8E8E93"
+                    android:textSize="10sp" />
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_alarms"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:nestedScrollingEnabled="false" />
+            <!-- Tab 3: Widgets -->
+            <LinearLayout
+                android:id="@+id/nav_tab_widgets"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_nav_widgets"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="Widgets"
+                    android:src="@drawable/ic_widget_preview"
+                    app:tint="#8E8E93" />
+
+                <TextView
+                    android:id="@+id/tv_nav_widgets"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Виджеттер"
+                    android:textColor="#8E8E93"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <!-- Tab 4: Settings -->
+            <LinearLayout
+                android:id="@+id/nav_tab_settings"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_nav_settings"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="Settings"
+                    android:src="@drawable/ic_settings"
+                    app:tint="#8E8E93" />
+
+                <TextView
+                    android:id="@+id/tv_nav_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Баптаулар"
+                    android:textColor="#8E8E93"
+                    android:textSize="10sp" />
+            </LinearLayout>
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Add Alarm Floating Button -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    </LinearLayout>
+
+    <!-- Bottom Squircle FAB (image.png style) -->
+    <ImageButton
         android:id="@+id/fab_add_alarm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/kz_gold"
-        android:text="@string/add_alarm"
-        android:textColor="#061320"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:icon="@drawable/ic_alarm_add"
-        app:iconTint="#061320" />
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="78dp"
+        android:background="@drawable/bg_fab_squircle"
+        android:contentDescription="@string/add_alarm"
+        android:elevation="6dp"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_alarm_add"
+        app:tint="#061320" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
