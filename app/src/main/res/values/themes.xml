@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PatrioticAlarm" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/kz_sky_blue</item>
+        <item name="colorPrimaryVariant">@color/kz_sky_blue_dark</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/kz_gold</item>
+        <item name="colorSecondaryVariant">@color/kz_gold_dark</item>
+        <item name="colorOnSecondary">#071A2C</item>
+        
+        <!-- Background and surface -->
+        <item name="android:colorBackground">@color/kz_navy_bg</item>
+        <item name="colorSurface">@color/kz_navy_surface</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        
+        <!-- Status bar and navigation bar -->
+        <item name="android:statusBarColor">@color/kz_navy_bg</item>
+        <item name="android:navigationBarColor">@color/kz_navy_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme.PatrioticAlarm.FullScreen" parent="Theme.PatrioticAlarm">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>

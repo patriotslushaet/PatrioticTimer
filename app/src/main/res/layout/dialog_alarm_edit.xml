@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_kazakh"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="Alarm setup"
+            android:src="@drawable/ic_alarm_clock" />
+
+        <TextView
+            android:id="@+id/tv_dialog_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:text="Установить Будильник"
+            android:textColor="#FFCC00"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btn_close_dialog"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Close"
+            android:padding="6dp"
+            android:src="@drawable/ic_close" />
+    </LinearLayout>
+
+    <TimePicker
+        android:id="@+id/time_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:timePickerMode="spinner" />
+
+    <!-- Label input -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColorHint="#B2C9DF"
+        app:boxBackgroundColor="#102C48"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxStrokeColor="@color/kz_sky_blue"
+        app:hintTextColor="@color/kz_sky_blue">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_alarm_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Название будильника"
+            android:text="Патриотический подъем"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Quick preset chips -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/chip_weekdays"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:gravity="center"
+            android:text="Будни (Пн-Пт)"
+            android:textColor="#33C5DB"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/chip_weekends"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_marginHorizontal="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:gravity="center"
+            android:text="Выходные"
+            android:textColor="#33C5DB"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/chip_everyday"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:gravity="center"
+            android:text="Каждый день"
+            android:textColor="#33C5DB"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Days toggle bar (Mon..Sun) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/toggle_mon"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:textOff="Пн"
+            android:textOn="Пн"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp" />
+
+        <ToggleButton
+            android:id="@+id/toggle_tue"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:textOff="Вт"
+            android:textOn="Вт"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp" />
+
+        <ToggleButton
+            android:id="@+id/toggle_wed"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:textOff="Ср"
+            android:textOn="Ср"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp" />
+
+        <ToggleButton
+            android:id="@+id/toggle_thu"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:textOff="Чт"
+            android:textOn="Чт"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp" />
+
+        <ToggleButton
+            android:id="@+id/toggle_fri"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:textOff="Пт"
+            android:textOn="Пт"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp" />
+
+        <ToggleButton
+            android:id="@+id/toggle_sat"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:textOff="Сб"
+            android:textOn="Сб"
+            android:textColor="#FFCC00"
+            android:textSize="11sp" />
+
+        <ToggleButton
+            android:id="@+id/toggle_sun"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_card_caspian"
+            android:textOff="Вс"
+            android:textOn="Вс"
+            android:textColor="#FFCC00"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <!-- Streak Eligibility Dynamic Status Box -->
+    <LinearLayout
+        android:id="@+id/layout_streak_eligibility_notice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_pill_eligible"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/iv_notice_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="Notice"
+            android:src="@drawable/ic_check_circle" />
+
+        <TextView
+            android:id="@+id/tv_streak_eligibility_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Будет поддерживать серию патриота (00:00–10:00 будни, 00:00–12:00 выходные)"
+            android:textColor="#2ECC71"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save_alarm"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/kz_gold"
+        android:text="Сохранить будильник"
+        android:textColor="#071A2C"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:cornerRadius="14dp" />
+</LinearLayout>

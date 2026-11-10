@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- Standing human silhouette standing straight with right hand on left chest -->
+    <!-- Head -->
+    <path
+        android:fillColor="#FFCC00"
+        android:pathData="M24,4 A4,4 0 1,1 24,12 A4,4 0 1,1 24,4 Z" />
+    <!-- Body with right arm bent towards heart -->
+    <path
+        android:fillColor="#00AFCA"
+        android:pathData="M20,13 C17.8,13 16,14.8 16,17 V26 H18 V44 H22 V30 H26 V44 H30 V26 H32 V17 C32,14.8 30.2,13 28,13 H20 Z" />
+    <!-- Right Hand on Chest -->
+    <path
+        android:fillColor="#FFCC00"
+        android:pathData="M22,17 C22,16.5 22.5,16 23,16 H25 C25.5,16 26,16.5 26,17 V22 C26,22.5 25.5,23 25,23 H23 C22.5,23 22,22.5 22,22 Z" />
+</vector>

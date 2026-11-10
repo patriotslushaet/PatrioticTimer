@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Патриотический Будильник</string>
+    <string name="app_title_kz">Қазақстан Патриоты</string>
+    <string name="app_tagline">Очнись под гимн с рукой на сердце!</string>
+    
+    <!-- Streak and Titles -->
+    <string name="streak_label">Патриотическая серия</string>
+    <string name="streak_days_format">%1$d дней подряд</string>
+    <string name="streak_misses_format">Пропусков в этом месяце: %1$d из 2</string>
+    <string name="streak_rule_title">Правило серии патриота</string>
+    <string name="streak_rule_text">Будни (Пн-Пт): с 00:00 до 10:00 | Выходные (Сб-Вс): с 00:00 до 12:00.\nТолько будильники в этот интервал засчитываются в патриотическую серию! Будильники позже указанного времени не поддерживают серию, потому что это слишком поздно для настоящего патриота.</string>
+    
+    <!-- Alarms -->
+    <string name="add_alarm">Поставить будильник</string>
+    <string name="test_alarm">Тест будильника прямо сейчас</string>
+    <string name="no_alarms_yet">Нет активных будильников.\nПоставьте первый будильник для начала патриотической серии!</string>
+    <string name="alarm_streak_eligible">Засчитывается в серию ✓</string>
+    <string name="alarm_streak_ineligible">Слишком поздно для серии ⚠</string>
+    
+    <!-- Permissions -->
+    <string name="perm_title">Необходимые разрешения</string>
+    <string name="perm_desc">Для честного патриотического пробуждения требуются:\n1. Камера — для фиксации позы с рукой на сердце.\n2. Поверх других приложений — чтобы будильник с гимном надежно открылся на экране блокировки.\n3. Уведомления и точные будильники — для гарантированного срабатывания.</string>
+    <string name="perm_btn_grant">Предоставить разрешения</string>
+    <string name="perm_btn_camera">Разрешить Камеру</string>
+    <string name="perm_btn_overlay">Разрешить поверх приложений</string>
+    
+    <!-- Tutorial -->
+    <string name="tutorial_title">Инструкция Патриота</string>
+    <string name="tutorial_subtitle">Как правильно просыпаться:</string>
+    <string name="tutorial_step_1">1. В заданное время заиграет Государственный Гимн Казахстана и запустится камера.</string>
+    <string name="tutorial_step_2">2. Встаньте прямо перед камерой во весь рост или по пояс.</string>
+    <string name="tutorial_step_3">3. Приложите правую руку к сердцу (слева на груди) и держите позу неподвижно до конца гимна.</string>
+    <string name="tutorial_step_4">4. После гимна включится вдохновляющее обращение Президента К.-Ж. Токаева.</string>
+    <string name="tutorial_step_5">5. Будильник оценит вашу выправку (смирность и скорость вставания) и добавит +1 день к серии!</string>
+    <string name="tutorial_btn_ready">Бәрі түсінікті! (Всё понятно, я готов!)</string>
+    
+    <!-- Alarm Screen -->
+    <string name="pose_searching">Встаньте перед камерой…</string>
+    <string name="pose_hand_needed">Положите правую руку на сердце (слева)!</string>
+    <string name="pose_stand_straight">Выпрямитесь ровно перед камерой!</string>
+    <string name="pose_perfect">ТҰРЫС ДҰРЫС! Қозғалмай тұрыңыз! (Идеально, стойте смирно!)</string>
+    <string name="anthem_playing">Звучит Государственный Гимн Республики Казахстан…</string>
+    <string name="skip_test_btn">Пропустить к видео (для теста)</string>
+    
+    <!-- Completion Screen -->
+    <string name="done_title">ВЫПОЛНЕНО!</string>
+    <string name="done_kz">ЖАРАЙСЫҢ, ПАТРИОТ!</string>
+    <string name="done_subtitle">Патриотический долг выполнен безупречно!</string>
+    <string name="stat_stillness">Смирность стойки</string>
+    <string name="stat_reaction">Время вставания в позу</string>
+    <string name="stat_anthem_time">Время гимна</string>
+    <string name="stat_streak_extended">Серия продлена: +1 день!</string>
+    <string name="btn_to_main">В главное меню</string>
+</resources>

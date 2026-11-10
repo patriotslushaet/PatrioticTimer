@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Posture stillness target crosshair -->
+    <path
+        android:fillColor="#FFCC00"
+        android:pathData="M12,2 C6.49,2 2,6.49 2,12 C2,17.51 6.49,22 12,22 C17.51,22 22,17.51 22,12 C22,6.49 17.51,2 12,2 Z
+                         M12,4 C16.41,4 20,7.59 20,12 C20,16.41 16.41,20 12,20 C7.59,20 4,16.41 4,12 C4,7.59 7.59,4 12,4 Z
+                         M11,6 H13 V10 H11 V6 Z
+                         M11,14 H13 V18 H11 V14 Z
+                         M6,11 H10 V13 H6 V11 Z
+                         M14,11 H18 V13 H14 V11 Z
+                         M12,10.5 C12.83,10.5 13.5,11.17 13.5,12 C13.5,12.83 12.83,13.5 12,13.5 C11.17,13.5 10.5,12.83 10.5,12 C10.5,11.17 11.17,10.5 12,10.5 Z" />
+</vector>

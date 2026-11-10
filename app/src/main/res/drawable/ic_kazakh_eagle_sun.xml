@@ -1,0 +1,39 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Golden Sun with 32 stylized rays -->
+    <!-- Central Sun Circle -->
+    <path
+        android:fillColor="#FFCC00"
+        android:pathData="M48,32 m-14,0 a14,14 0 1,1 28,0 a14,14 0 1,1 -28,0" />
+    
+    <!-- Sun Rays around circle -->
+    <path
+        android:fillColor="#FFCC00"
+        android:pathData="M48,12 L50,16 L46,16 Z
+                         M48,52 L50,48 L46,48 Z
+                         M28,32 L32,34 L32,30 Z
+                         M68,32 L64,34 L64,30 Z
+                         M34,18 L38,20 L35,23 Z
+                         M62,18 L58,20 L61,23 Z
+                         M34,46 L38,44 L35,41 Z
+                         M62,46 L58,44 L61,41 Z
+                         M41,13 L43,17 L40,18 Z
+                         M55,13 L53,17 L56,18 Z
+                         M41,51 L43,47 L40,46 Z
+                         M55,51 L53,47 L56,46 Z
+                         M29,25 L33,27 L32,30 Z
+                         M67,25 L63,27 L64,30 Z
+                         M29,39 L33,37 L32,34 Z
+                         M67,39 L63,37 L64,34 Z" />
+
+    <!-- Soaring Steppe Eagle (Бүркіт) Silhouette in Gold -->
+    <path
+        android:fillColor="#FFCC00"
+        android:pathData="M48,54 C45,56 36,60 22,58 C16,57 12,62 10,65 C18,63 26,62 33,65 C39,67 43,72 48,74 C53,72 57,67 63,65 C70,62 78,63 86,65 C84,62 80,57 74,58 C60,60 51,56 48,54 Z" />
+    <path
+        android:fillColor="#FFCC00"
+        android:pathData="M48,58 C46,62 43,68 38,72 C42,73 45,77 48,82 C51,77 54,73 58,72 C53,68 50,62 48,58 Z" />
+</vector>
