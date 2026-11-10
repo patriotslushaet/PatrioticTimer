@@ -123,26 +123,48 @@ public class AdManager {
     }
 
     /**
-     * Requirement: Restoration of misses 2/2 or 1/2 costs 2 mandatory ad views!
+     * Requirement: If you have 1/2 and want to restore +1 to 2/2, you watch 1 ad!
+     * Each ad watched restores +1 miss pass.
      */
-    public static void showMandatoryDoubleAdForMissRestore(Activity activity, Runnable onComplete) {
+    public static void showAdToRestoreMiss(Activity activity, Runnable onComplete) {
         if (activity == null || activity.isFinishing()) return;
 
         boolean isKz = LanguageProgressionManager.isKazakh(activity);
+        int remaining = StreakManager.getMonthlyMissesRemaining(activity);
 
-        // First mandatory ad (1 of 2)
-        playMandatoryAd(activity, 1, 2, () -> {
-            // Second mandatory ad (2 of 2)
-            playMandatoryAd(activity, 2, 2, () -> {
-                // Success: restore monthly misses to 2/2
-                StreakManager.restoreMonthlyMisses(activity);
-                String msg = isKz ?
-                        "Құттықтаймыз! 2 міндетті жарнама қаралды. Серия өткізіп алу запасы 2/2 толық қалпына келтірілді! 🇰🇿" :
-                        "Поздравляем! Просмотрено 2 обязательных рекламы. Запас пропусков 2/2 успешно восстановлен! 🇰🇿";
-                Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
-                if (onComplete != null) onComplete.run();
-            });
+        if (remaining >= 2) {
+            String msg = isKz ?
+                    "Өткізіп алу запасы қазірдің өзінде толық (2/2)! Жарнама көру қажет емес." :
+                    "Запас пропусков уже полон (2 из 2)! Просмотр рекламы не требуется.";
+            Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Play 1 mandatory ad
+        playMandatoryAd(activity, 1, 1, () -> {
+            boolean restored = StreakManager.restoreOneMiss(activity);
+            int newRemaining = StreakManager.getMonthlyMissesRemaining(activity);
+
+            String msg;
+            if (newRemaining >= 2) {
+                msg = isKz ?
+                        "Құттықтаймыз! 1 жарнама қаралды. Өткізіп алу запасы толық қалпына келтірілді: 2/2 ✓ 🇰🇿" :
+                        "Поздравляем! 1 реклама просмотрена. Запас пропусков полностью восстановлен: 2/2 ✓ 🇰🇿";
+            } else {
+                msg = isKz ?
+                        "Жарнама қаралды! +1 өткізіп алу қайтарылды (енді 1/2). 2/2 болу үшін тағы 1 жарнама көріңіз! 🇰🇿" :
+                        "Реклама просмотрена! Восстановлен +1 пропуск (теперь 1/2). Для 2/2 посмотрите еще 1 рекламу! 🇰🇿";
+            }
+            Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
+            if (onComplete != null) onComplete.run();
         });
+    }
+
+    /**
+     * Backward-compatible alias.
+     */
+    public static void showMandatoryDoubleAdForMissRestore(Activity activity, Runnable onComplete) {
+        showAdToRestoreMiss(activity, onComplete);
     }
 
     private static void playMandatoryAd(Activity activity, int currentNum, int totalNum, Runnable onDone) {

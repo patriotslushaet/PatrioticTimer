@@ -59,7 +59,21 @@ public class StreakManager {
     }
 
     /**
-     * Restores misses back to full 2/2 (via 2 mandatory ad views).
+     * Restores +1 monthly miss pass (e.g. from 1/2 -> 2/2, or from 0/2 -> 1/2) via watching 1 ad!
+     */
+    public static boolean restoreOneMiss(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        int misses = sp.getInt(KEY_MONTHLY_MISSES, 0);
+        if (misses > 0) {
+            sp.edit().putInt(KEY_MONTHLY_MISSES, misses - 1).apply();
+            updateWidgets(context);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Restores misses back to full 2/2.
      */
     public static void restoreMonthlyMisses(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);

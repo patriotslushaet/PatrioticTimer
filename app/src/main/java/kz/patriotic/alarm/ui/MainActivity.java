@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
     private TextView tvStreakHeroTitle, tvStreakNumber, tvStreakUnit;
     private TextView tvTierName, tvTierDesc, tvStreakMisses, tvRoadmapHeader;
     private TextView tvStreakRecoveryTitle, tvStreakRecoveryDesc;
-    private MaterialButton btnRestoreMissesAds, btnRestoreStreakPaid;
+    private MaterialButton btnRestoreMissesAds, btnRestoreStreakPaid, btnSimulateMiss;
     private RecyclerView recyclerRoadmapInline;
 
     // Tab 3: Widgets Views
@@ -214,13 +214,27 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         tvStreakRecoveryDesc = findViewById(R.id.tv_streak_recovery_desc);
         btnRestoreMissesAds = findViewById(R.id.btn_restore_misses_ads);
         btnRestoreStreakPaid = findViewById(R.id.btn_restore_streak_paid);
+        btnSimulateMiss = findViewById(R.id.btn_simulate_miss);
 
         btnRestoreMissesAds.setOnClickListener(v -> {
-            AdManager.showMandatoryDoubleAdForMissRestore(this, () -> {
+            AdManager.showAdToRestoreMiss(this, () -> {
                 updateStreakUI();
                 updateLocalizationUI();
             });
         });
+
+        if (btnSimulateMiss != null) {
+            btnSimulateMiss.setOnClickListener(v -> {
+                StreakManager.consumeOneMiss(this);
+                updateStreakUI();
+                updateLocalizationUI();
+                boolean isKz = LanguageProgressionManager.isKazakh(this);
+                String msg = isKz ?
+                        "1 өткізіп алу жұмсалды (тест). Енді сізде 1/2! 2/2 қалпына келтіру үшін 1 жарнама көріңіз." :
+                        "Использован 1 пропуск (для теста). Теперь у вас 1/2! Посмотрите 1 рекламу для восстановления до 2/2.";
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            });
+        }
 
         btnRestoreStreakPaid.setOnClickListener(v -> {
             AdManager.showPurchaseStreakRestoreDialog(this, () -> {
@@ -458,6 +472,23 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         if (previewW1Streak != null) previewW1Streak.setText(streakStr);
         if (previewW2Streak != null) previewW2Streak.setText(streakStr);
 
+        // Update Recovery Button text based on current misses remaining
+        if (btnRestoreMissesAds != null) {
+            if (missesRemaining >= 2) {
+                btnRestoreMissesAds.setText(isKz ? "Өткізіп алу запасы толық (2/2) ✓" : "Запас пропусков полон (2/2) ✓");
+                btnRestoreMissesAds.setAlpha(0.7f);
+            } else if (missesRemaining == 1) {
+                btnRestoreMissesAds.setText(isKz ? "1 жарнама көру (+1 запас → 2/2)" : "Смотреть 1 рекламу (+1 запас → 2/2)");
+                btnRestoreMissesAds.setAlpha(1.0f);
+            } else {
+                btnRestoreMissesAds.setText(isKz ? "1 жарнама көру (+1 запас → 1/2)" : "Смотреть 1 рекламу (+1 запас → 1/2)");
+                btnRestoreMissesAds.setAlpha(1.0f);
+            }
+        }
+        if (btnSimulateMiss != null) {
+            btnSimulateMiss.setText(isKz ? "Тест: 1 өткізіп алуды жұмсау (-1 запас)" : "Тест: потратить 1 пропуск (-1 запас)");
+        }
+
         // Tab 5 Progress
         int learningProgress = LanguageProgressionManager.getLearningProgressPercent(this);
         if (progressLearningBar != null) progressLearningBar.setProgress(learningProgress);
@@ -528,12 +559,26 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
 
         tvStreakRecoveryTitle.setText(isKz ? "СЕРИЯ ЖӘНЕ ЗАПАСТЫ ҚАЛПЫНА КЕЛТІРУ" : "ВОССТАНОВЛЕНИЕ СЕРИИ И ПРОПУСКОВ");
         tvStreakRecoveryDesc.setText(isKz ?
-                "Будильникті өткізіп алдыңыз ба? Қалпына келтіру әдісін таңдаңыз:\n• 2/2 запасты қалпына келтіру: 2 міндетті жарнама көру\n• Серияны толық қалпына келтіру: 500 ₸" :
-                "Пропустили будильник? Выберите способ восстановления:\n• Восстановление запаса 2/2: 2 обязательных просмотра рекламы\n• Полное восстановление серии: 500 ₸");
+                "Будильникті өткізіп алдыңыз ба? Егер сізде 1/2 болса, 1 жарнама көру арқылы +1 запас (2/2-ге дейін) қайтарылады!\n• 1 жарнама көру: +1 өткізіп алу запасы (2/2-ге дейін)\n• Серияны толық қалпына келтіру: 500 ₸" :
+                "Пропустили будильник? Если у вас 1/2, то просмотр 1 рекламы восстанавливает +1 запас (до 2/2)!\n• Просмотр 1 рекламы: +1 пропуск (до 2/2)\n• Полное восстановление серии: 500 ₸");
 
-        btnRestoreMissesAds.setText(isKz ?
-                "2 жарнама көру (2/2 запасты қайтару)" :
-                "Смотреть 2 рекламы (Восстановить 2/2)");
+        int missesRem = StreakManager.getMonthlyMissesRemaining(this);
+        if (btnRestoreMissesAds != null) {
+            if (missesRem >= 2) {
+                btnRestoreMissesAds.setText(isKz ? "Өткізіп алу запасы толық (2/2) ✓" : "Запас пропусков полон (2/2) ✓");
+                btnRestoreMissesAds.setAlpha(0.7f);
+            } else if (missesRem == 1) {
+                btnRestoreMissesAds.setText(isKz ? "1 жарнама көру (+1 запас → 2/2)" : "Смотреть 1 рекламу (+1 запас → 2/2)");
+                btnRestoreMissesAds.setAlpha(1.0f);
+            } else {
+                btnRestoreMissesAds.setText(isKz ? "1 жарнама көру (+1 запас → 1/2)" : "Смотреть 1 рекламу (+1 запас → 1/2)");
+                btnRestoreMissesAds.setAlpha(1.0f);
+            }
+        }
+
+        if (btnSimulateMiss != null) {
+            btnSimulateMiss.setText(isKz ? "Тест: 1 өткізіп алуды жұмсау (-1 запас)" : "Тест: потратить 1 пропуск (-1 запас)");
+        }
 
         btnRestoreStreakPaid.setText(isKz ?
                 "Серияны 500 ₸-ге қалпына келтіру" :

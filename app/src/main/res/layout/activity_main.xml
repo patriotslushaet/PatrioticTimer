@@ -420,11 +420,11 @@
 
                         <TextView
                             android:id="@+id/tv_streak_recovery_desc"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:lineSpacingExtra="2dp"
-                            android:text="Пропустили будильник? Выберите способ восстановления:\n• Восстановление запаса 2/2: 2 обязательных просмотра рекламы\n• Полное восстановление серии: 500 ₸"
+                            android:text="Пропустили будильник? Если у вас 1/2, то просмотр 1 рекламы восстанавливает +1 запас (до 2/2)!\n• Просмотр 1 рекламы: +1 пропуск (до 2/2)\n• Полное восстановление серии: 500 ₸"
                             android:textColor="#A0B8D0"
                             android:textSize="11sp" />
 
@@ -434,13 +434,13 @@
                             android:layout_marginTop="12dp"
                             android:orientation="vertical">
 
-                            <!-- Button 1: 2 mandatory ads -->
+                            <!-- Button 1: 1 ad for +1 miss pass -->
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btn_restore_misses_ads"
                                 android:layout_width="match_parent"
                                 android:layout_height="46dp"
                                 android:backgroundTint="@color/kz_sky_blue"
-                                android:text="Смотреть 2 рекламы (Восстановить 2/2)"
+                                android:text="Смотреть 1 рекламу (+1 запас → 2/2)"
                                 android:textColor="#061320"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
@@ -458,6 +458,17 @@
                                 android:textSize="12sp"
                                 android:textStyle="bold"
                                 app:cornerRadius="12dp" />
+
+                            <!-- Simulation Test Button to spend 1 pass for testing -->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_simulate_miss"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="36dp"
+                                android:layout_marginTop="2dp"
+                                android:text="Тест: потратить 1 пропуск (-1 запас)"
+                                android:textColor="#8EA9C1"
+                                android:textSize="10sp" />
                         </LinearLayout>
                     </LinearLayout>
 
