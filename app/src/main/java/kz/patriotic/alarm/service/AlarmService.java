@@ -7,9 +7,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioAttributes;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.os.VibrationEffect;
 
@@ -23,6 +24,25 @@ public class AlarmService extends Service {
     private static final String CHANNEL_ID = "patriotic_alarm_channel_v1";
     private static final int NOTIFICATION_ID = 1991;
     private Vibrator vibrator;
+    private final Handler autoStopHandler = new Handler(Looper.getMainLooper());
+    private Runnable autoStopRunnable;
+
+    /**
+     * Safely stops the alarm service and cancels all active vibrations across the app.
+     */
+    public static void stopAlarm(Context context) {
+        if (context == null) return;
+        try {
+            context.stopService(new Intent(context, AlarmService.class));
+        } catch (Exception ignored) {}
+
+        try {
+            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            if (v != null) {
+                v.cancel();
+            }
+        } catch (Exception ignored) {}
+    }
 
     @Override
     public void onCreate() {
@@ -64,7 +84,7 @@ public class AlarmService extends Service {
 
         startForeground(NOTIFICATION_ID, notification);
 
-        // Gentle vibration pulse
+        // Controlled vibration pulse for initial wake-up
         try {
             vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             if (vibrator != null && vibrator.hasVibrator()) {
@@ -77,15 +97,28 @@ public class AlarmService extends Service {
             }
         } catch (Exception ignored) {}
 
-        return START_STICKY;
+        // Safety auto-cancel after 30 seconds so vibration never hangs indefinitely
+        autoStopRunnable = () -> {
+            stopAlarm(this);
+            stopSelf();
+        };
+        autoStopHandler.postDelayed(autoStopRunnable, 30000L);
+
+        return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (autoStopHandler != null && autoStopRunnable != null) {
+            autoStopHandler.removeCallbacks(autoStopRunnable);
+        }
         if (vibrator != null) {
             try { vibrator.cancel(); } catch (Exception ignored) {}
         }
+        try {
+            stopForeground(true);
+        } catch (Exception ignored) {}
     }
 
     @Nullable

@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import kz.patriotic.alarm.R;
+import kz.patriotic.alarm.service.AlarmService;
 import kz.patriotic.alarm.util.PoseAnalysisResult;
 import kz.patriotic.alarm.util.PoseTracker;
 
@@ -73,6 +74,9 @@ public class AlarmActivity extends AppCompatActivity {
         );
 
         setContentView(R.layout.activity_alarm);
+
+        // Immediately silence alarm vibration and stop background alarm service now that full-screen activity & anthem took over
+        AlarmService.stopAlarm(this);
 
         initViews();
         initPoseDetector();
@@ -244,6 +248,8 @@ public class AlarmActivity extends AppCompatActivity {
         float finalStillness = poseTracker.getAverageStillness();
         float finalReaction = poseTracker.getAcquisitionTimeSec();
 
+        AlarmService.stopAlarm(this);
+
         Intent intent = new Intent(this, TokayevVideoActivity.class);
         intent.putExtra("stillness_score", finalStillness);
         intent.putExtra("reaction_time", finalReaction);
@@ -255,6 +261,7 @@ public class AlarmActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AlarmService.stopAlarm(this);
         if (anthemTimer != null) anthemTimer.cancel();
         if (anthemPlayer != null) {
             try {

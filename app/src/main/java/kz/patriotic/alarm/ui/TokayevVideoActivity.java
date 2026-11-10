@@ -1,7 +1,6 @@
 package kz.patriotic.alarm.ui;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,12 +12,13 @@ import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import kz.patriotic.alarm.R;
+import kz.patriotic.alarm.service.AlarmService;
+import kz.patriotic.alarm.util.PatrioticMusicManager;
 
 public class TokayevVideoActivity extends AppCompatActivity {
     private static final String TAG = "TokayevVideoActivity";
 
     private VideoView videoView;
-    private MediaPlayer musicPlayer;
     private float stillnessScore = 98f;
     private float reactionTime = 3.2f;
     private String anthemDuration = "01:50";
@@ -35,6 +35,8 @@ public class TokayevVideoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tokayev_video);
 
+        AlarmService.stopAlarm(this);
+
         Intent intent = getIntent();
         if (intent != null) {
             stillnessScore = intent.getFloatExtra("stillness_score", 98f);
@@ -46,7 +48,7 @@ public class TokayevVideoActivity extends AppCompatActivity {
 
         videoView = findViewById(R.id.video_tokayev);
 
-        // Hide skip/finish button - user wants automatic transition after the video repeats once
+        // Hide skip/finish button - automatic transition after the video repeats once
         View btnFinish = findViewById(R.id.btn_finish_video);
         if (btnFinish != null) {
             btnFinish.setVisibility(View.GONE);
@@ -60,9 +62,6 @@ public class TokayevVideoActivity extends AppCompatActivity {
             Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.tokayev_video);
             videoView.setVideoURI(videoUri);
 
-            // Music: you-cant-rush-perfection-slowed-zenyth-was-here_T4HyXjmR.mp3
-            musicPlayer = MediaPlayer.create(this, R.raw.tokayev_music);
-
             videoView.setOnPreparedListener(mp -> {
                 mp.setLooping(false); // We control the repeat count manually
                 mp.setVolume(0f, 0f); // Mute short video audio so music takes focus
@@ -70,12 +69,11 @@ public class TokayevVideoActivity extends AppCompatActivity {
                 playbackIteration = 1;
                 videoView.start();
 
-                // Start music simultaneously from 0:00!
-                if (musicPlayer != null && !musicPlayer.isPlaying()) {
-                    musicPlayer.start();
-                }
+                // Start patriotic music simultaneously from 0:00!
+                // It will seamlessly continue through to the completed statistics screen.
+                PatrioticMusicManager.startTokayevMusic(this);
 
-                // Safety fallback timer (~3.5 seconds = 1.67s * 2 + buffer)
+                // Safety fallback timer (~3.6 seconds = 1.67s * 2 + buffer)
                 int videoDuration = videoView.getDuration();
                 long totalPlayMs = (videoDuration > 0) ? (long) videoDuration * MAX_ITERATIONS + 200L : 3600L;
 
@@ -115,14 +113,7 @@ public class TokayevVideoActivity extends AppCompatActivity {
             autoFinishHandler.removeCallbacks(autoFinishRunnable);
         }
 
-        if (musicPlayer != null) {
-            try {
-                if (musicPlayer.isPlaying()) musicPlayer.stop();
-                musicPlayer.release();
-            } catch (Exception ignored) {}
-            musicPlayer = null;
-        }
-
+        // Keep music playing! Do NOT stop music here, it overlays onto the statistics screen.
         if (videoView != null) {
             try { videoView.stopPlayback(); } catch (Exception ignored) {}
         }
@@ -140,12 +131,6 @@ public class TokayevVideoActivity extends AppCompatActivity {
         super.onDestroy();
         if (autoFinishRunnable != null) {
             autoFinishHandler.removeCallbacks(autoFinishRunnable);
-        }
-        if (musicPlayer != null) {
-            try {
-                if (musicPlayer.isPlaying()) musicPlayer.stop();
-                musicPlayer.release();
-            } catch (Exception ignored) {}
         }
         if (videoView != null) {
             try { videoView.stopPlayback(); } catch (Exception ignored) {}

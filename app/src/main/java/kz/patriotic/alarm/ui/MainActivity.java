@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+import java.util.Arrays;
 import java.util.List;
 
 import kz.patriotic.alarm.R;
@@ -240,15 +241,21 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         timePicker.setIs24HourView(true);
         EditText etLabel = dialog.findViewById(R.id.et_alarm_label);
 
-        ToggleButton[] dayToggles = new ToggleButton[]{
-                dialog.findViewById(R.id.toggle_mon),
-                dialog.findViewById(R.id.toggle_tue),
-                dialog.findViewById(R.id.toggle_wed),
-                dialog.findViewById(R.id.toggle_thu),
-                dialog.findViewById(R.id.toggle_fri),
-                dialog.findViewById(R.id.toggle_sat),
-                dialog.findViewById(R.id.toggle_sun)
+        TextView[] dayButtons = new TextView[]{
+                dialog.findViewById(R.id.btn_day_mon),
+                dialog.findViewById(R.id.btn_day_tue),
+                dialog.findViewById(R.id.btn_day_wed),
+                dialog.findViewById(R.id.btn_day_thu),
+                dialog.findViewById(R.id.btn_day_fri),
+                dialog.findViewById(R.id.btn_day_sat),
+                dialog.findViewById(R.id.btn_day_sun)
         };
+
+        TextView chipWeekdays = dialog.findViewById(R.id.chip_weekdays);
+        TextView chipWeekends = dialog.findViewById(R.id.chip_weekends);
+        TextView chipEveryday = dialog.findViewById(R.id.chip_everyday);
+        TextView chipOnce = dialog.findViewById(R.id.chip_once);
+        TextView tvSelectedDaysSummary = dialog.findViewById(R.id.tv_selected_days_summary);
 
         TextView tvNoticeDesc = dialog.findViewById(R.id.tv_streak_eligibility_desc);
         ImageView ivNoticeIcon = dialog.findViewById(R.id.iv_notice_icon);
@@ -257,22 +264,94 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         boolean isNew = (alarmToEdit == null);
         AlarmItem alarm = isNew ? new AlarmItem() : alarmToEdit;
 
-        timePicker.setCurrentHour(alarm.getHour());
-        timePicker.setCurrentMinute(alarm.getMinute());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            timePicker.setHour(alarm.getHour());
+            timePicker.setMinute(alarm.getMinute());
+        } else {
+            timePicker.setCurrentHour(alarm.getHour());
+            timePicker.setCurrentMinute(alarm.getMinute());
+        }
         etLabel.setText(alarm.getLabel());
 
-        boolean[] days = alarm.getDaysOfWeek();
-        for (int i = 0; i < 7; i++) {
-            dayToggles[i].setChecked(days[i]);
+        boolean[] selectedDays = new boolean[7];
+        boolean[] existingDays = alarm.getDaysOfWeek();
+        if (existingDays != null && existingDays.length == 7) {
+            System.arraycopy(existingDays, 0, selectedDays, 0, 7);
+        } else {
+            // Default: weekdays
+            selectedDays[0] = true;
+            selectedDays[1] = true;
+            selectedDays[2] = true;
+            selectedDays[3] = true;
+            selectedDays[4] = true;
         }
 
-        Runnable checkEligibility = () -> {
-            int h = timePicker.getCurrentHour();
-            int m = timePicker.getCurrentMinute();
+        Runnable updateDaysUI = () -> {
+            for (int i = 0; i < 7; i++) {
+                boolean active = selectedDays[i];
+                if (active) {
+                    if (i >= 5) {
+                        dayButtons[i].setBackgroundResource(R.drawable.bg_day_selected_weekend);
+                        dayButtons[i].setTextColor(0xFF061320);
+                    } else {
+                        dayButtons[i].setBackgroundResource(R.drawable.bg_day_selected_weekday);
+                        dayButtons[i].setTextColor(0xFF061320);
+                    }
+                } else {
+                    dayButtons[i].setBackgroundResource(R.drawable.bg_day_unselected);
+                    dayButtons[i].setTextColor(0xFF8DB4D6);
+                }
+            }
 
-            boolean hasWeekday = dayToggles[0].isChecked() || dayToggles[1].isChecked() ||
-                    dayToggles[2].isChecked() || dayToggles[3].isChecked() || dayToggles[4].isChecked();
-            boolean hasWeekend = dayToggles[5].isChecked() || dayToggles[6].isChecked();
+            // Check matching presets
+            int count = 0;
+            for (boolean b : selectedDays) if (b) count++;
+
+            boolean isWeekdays = (count == 5 && selectedDays[0] && selectedDays[1] && selectedDays[2] && selectedDays[3] && selectedDays[4]);
+            boolean isWeekends = (count == 2 && selectedDays[5] && selectedDays[6]);
+            boolean isEveryday = (count == 7);
+            boolean isOnce = (count == 0);
+
+            chipWeekdays.setBackgroundResource(isWeekdays ? R.drawable.bg_chip_selected : R.drawable.bg_chip_unselected);
+            chipWeekdays.setTextColor(isWeekdays ? 0xFF33C5DB : 0xFF8DB4D6);
+
+            chipWeekends.setBackgroundResource(isWeekends ? R.drawable.bg_chip_selected : R.drawable.bg_chip_unselected);
+            chipWeekends.setTextColor(isWeekends ? 0xFFFEC50C : 0xFF8DB4D6);
+
+            chipEveryday.setBackgroundResource(isEveryday ? R.drawable.bg_chip_selected : R.drawable.bg_chip_unselected);
+            chipEveryday.setTextColor(isEveryday ? 0xFF33C5DB : 0xFF8DB4D6);
+
+            chipOnce.setBackgroundResource(isOnce ? R.drawable.bg_chip_selected : R.drawable.bg_chip_unselected);
+            chipOnce.setTextColor(isOnce ? 0xFFFEC50C : 0xFF8DB4D6);
+
+            // Summary text
+            if (isEveryday) {
+                tvSelectedDaysSummary.setText("Повтор: Каждый день (7 дней в неделю)");
+            } else if (isWeekdays) {
+                tvSelectedDaysSummary.setText("Повтор: Будни (Пн, Вт, Ср, Чт, Пт)");
+            } else if (isWeekends) {
+                tvSelectedDaysSummary.setText("Повтор: Выходные (Сб, Вс)");
+            } else if (isOnce) {
+                tvSelectedDaysSummary.setText("Без повтора: Сработает один раз");
+            } else {
+                String[] names = {"Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"};
+                StringBuilder sb = new StringBuilder("Повтор: ");
+                for (int i = 0; i < 7; i++) {
+                    if (selectedDays[i]) {
+                        if (sb.length() > 8) sb.append(", ");
+                        sb.append(names[i]);
+                    }
+                }
+                tvSelectedDaysSummary.setText(sb.toString());
+            }
+        };
+
+        Runnable checkEligibility = () -> {
+            int h = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) ? timePicker.getHour() : timePicker.getCurrentHour();
+            int m = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) ? timePicker.getMinute() : timePicker.getCurrentMinute();
+
+            boolean hasWeekday = selectedDays[0] || selectedDays[1] || selectedDays[2] || selectedDays[3] || selectedDays[4];
+            boolean hasWeekend = selectedDays[5] || selectedDays[6];
 
             boolean weekdayEligible = (h < 10) || (h == 10 && m == 0);
             boolean weekendEligible = (h < 12) || (h == 12 && m == 0);
@@ -298,46 +377,66 @@ public class MainActivity extends AppCompatActivity implements AlarmsAdapter.OnA
         };
 
         timePicker.setOnTimeChangedListener((view, hourOfDay, minute) -> checkEligibility.run());
-        for (ToggleButton tb : dayToggles) {
-            tb.setOnCheckedChangeListener((buttonView, isChecked) -> checkEligibility.run());
+
+        // Individual day buttons click listeners
+        for (int i = 0; i < 7; i++) {
+            final int dayIdx = i;
+            dayButtons[dayIdx].setOnClickListener(v -> {
+                selectedDays[dayIdx] = !selectedDays[dayIdx];
+                updateDaysUI.run();
+                checkEligibility.run();
+            });
         }
 
-        dialog.findViewById(R.id.chip_weekdays).setOnClickListener(v -> {
-            for (int i = 0; i < 5; i++) dayToggles[i].setChecked(true);
-            dayToggles[5].setChecked(false);
-            dayToggles[6].setChecked(false);
+        // Preset chip listeners
+        chipWeekdays.setOnClickListener(v -> {
+            for (int i = 0; i < 5; i++) selectedDays[i] = true;
+            selectedDays[5] = false;
+            selectedDays[6] = false;
+            updateDaysUI.run();
             checkEligibility.run();
         });
 
-        dialog.findViewById(R.id.chip_weekends).setOnClickListener(v -> {
-            for (int i = 0; i < 5; i++) dayToggles[i].setChecked(false);
-            dayToggles[5].setChecked(true);
-            dayToggles[6].setChecked(true);
+        chipWeekends.setOnClickListener(v -> {
+            for (int i = 0; i < 5; i++) selectedDays[i] = false;
+            selectedDays[5] = true;
+            selectedDays[6] = true;
+            updateDaysUI.run();
             checkEligibility.run();
         });
 
-        dialog.findViewById(R.id.chip_everyday).setOnClickListener(v -> {
-            for (int i = 0; i < 7; i++) dayToggles[i].setChecked(true);
+        chipEveryday.setOnClickListener(v -> {
+            for (int i = 0; i < 7; i++) selectedDays[i] = true;
+            updateDaysUI.run();
             checkEligibility.run();
         });
 
+        chipOnce.setOnClickListener(v -> {
+            for (int i = 0; i < 7; i++) selectedDays[i] = false;
+            updateDaysUI.run();
+            checkEligibility.run();
+        });
+
+        updateDaysUI.run();
         checkEligibility.run();
 
         dialog.findViewById(R.id.btn_close_dialog).setOnClickListener(v -> dialog.dismiss());
 
         dialog.findViewById(R.id.btn_save_alarm).setOnClickListener(v -> {
-            alarm.setHour(timePicker.getCurrentHour());
-            alarm.setMinute(timePicker.getCurrentMinute());
+            int h = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) ? timePicker.getHour() : timePicker.getCurrentHour();
+            int m = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) ? timePicker.getMinute() : timePicker.getCurrentMinute();
+
+            alarm.setHour(h);
+            alarm.setMinute(m);
             alarm.setLabel(etLabel.getText().toString().trim().isEmpty() ? "Патриотический подъем" : etLabel.getText().toString().trim());
-            boolean[] newDays = new boolean[7];
-            for (int i = 0; i < 7; i++) newDays[i] = dayToggles[i].isChecked();
-            alarm.setDaysOfWeek(newDays);
+            alarm.setDaysOfWeek(Arrays.copyOf(selectedDays, 7));
             alarm.setEnabled(true);
 
             if (isNew) {
                 AlarmStorage.addAlarm(this, alarm);
                 alarmList.add(0, alarm);
                 alarmsAdapter.notifyItemInserted(0);
+                if (recyclerAlarms != null) recyclerAlarms.scrollToPosition(0);
             } else {
                 AlarmStorage.updateAlarm(this, alarm);
                 alarmsAdapter.notifyDataSetChanged();

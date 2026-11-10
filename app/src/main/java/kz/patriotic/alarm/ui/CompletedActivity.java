@@ -24,6 +24,8 @@ import java.util.Locale;
 
 import kz.patriotic.alarm.R;
 import kz.patriotic.alarm.model.StreakTier;
+import kz.patriotic.alarm.service.AlarmService;
+import kz.patriotic.alarm.util.PatrioticMusicManager;
 import kz.patriotic.alarm.util.StreakManager;
 
 public class CompletedActivity extends AppCompatActivity {
@@ -41,6 +43,12 @@ public class CompletedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_completed);
+
+        // Cancel any residual alarm vibration
+        AlarmService.stopAlarm(this);
+
+        // Continue playing Tokayev music over the statistics screen
+        PatrioticMusicManager.startTokayevMusic(this);
 
         final float targetStillness = getIntent().getFloatExtra("stillness_score", 98f);
         final float targetReaction = getIntent().getFloatExtra("reaction_time", 2.8f);
@@ -167,20 +175,22 @@ public class CompletedActivity extends AppCompatActivity {
             delay += 120;
         }
 
-        // Haptic feedback
+        // Clean haptic feedback (cancel prior vibration first)
         try {
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             if (vibrator != null && vibrator.hasVibrator()) {
+                vibrator.cancel();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(120, VibrationEffect.DEFAULT_AMPLITUDE));
+                    vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
-                    vibrator.vibrate(120);
+                    vibrator.vibrate(100);
                 }
             }
         } catch (Exception ignored) {}
     }
 
     private void returnToMain() {
+        PatrioticMusicManager.stopMusic();
         Intent mainIntent = new Intent(this, MainActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(mainIntent);
@@ -190,5 +200,11 @@ public class CompletedActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         returnToMain();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PatrioticMusicManager.stopMusic();
     }
 }
